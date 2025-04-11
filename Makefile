@@ -1,4 +1,4 @@
-NAME		=	so_long
+NAME		=	cub3d
 MLX_DIR		=	mlx
 MLX_LIB		=	$(MLX_DIR)/libmlx.a
 
@@ -8,16 +8,7 @@ RM			=	rm -rf
 CC			=	cc
 CFLAGS		=	-Wall -Wextra -Werror
 
-SRCS		=	solong.c \
-				solong2.c \
-				graphic1.c \
-				get_next_line.c \
-				renderer.c \
-				map.c \
-				pathfind.c \
-				get_next_line_utils.c \
-				ft_printf.c \
-				ft_printf_utils.c
+SRCS		=	src/main.c
 
 OBJS        = $(SRCS:.c=.o)
 
