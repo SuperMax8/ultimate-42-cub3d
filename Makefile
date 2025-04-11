@@ -6,9 +6,9 @@ INCLUDES	=	-I/usr/include -Imlx
 
 RM			=	rm -rf
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	#-Wall -Wextra -Werror
 
-SRCS		=	src/main.c
+SRCS		=	src/main.c src/renderer.c src/vecutils.c src/graph.c
 
 OBJS        = $(SRCS:.c=.o)
 

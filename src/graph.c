@@ -6,7 +6,7 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:21 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/11 18:58:23 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/04/11 21:47:58 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static void	move(t_cub *cub, float dir)
 {
 	t_vec2f	vdir;
 
+	cub->lastploc.x = cub->ploc.x;
+	cub->lastploc.y = cub->ploc.y;
 	vdir = yawtovec(cub->pyaw);
 	cub->ploc.x += vdir.x * dir;
 	cub->ploc.y += vdir.y * dir;
@@ -67,13 +69,13 @@ static int	handle_keyrelease(int keycode, t_cub *cub)
 static int	computemove(t_cub *cub)
 {
 	if (cub->forwardpress)
-		move(cub, 0.01);
+		move(cub, 0.03);
 	else if (cub->backwardpress)
-		move(cub, -0.01);
+		move(cub, -0.03);
 	else if (cub->rightpress)
-		rotate(cub, 0.1);
+		rotate(cub, 1);
 	else if (cub->leftpress)
-		rotate(cub, -0.1);
+		rotate(cub, -1);
 	return (0);
 }
 
@@ -84,8 +86,14 @@ int	loop(t_cub *cub)
 	mlx_put_image_to_window(cub->mlx_ptr, cub->window, cub->framebuff.img, 0,
 		0);
 	cub->t++;
-    printf("xpos: %f  ypos: %f  yaw: %f\n", cub->ploc.x, cub->ploc.y,
-		cub->pyaw);
+	
+	if (cub->ploc.x != cub->lastploc.x || cub->ploc.y != cub->lastploc.y)
+	{
+		printf("xpos: %f  ypos: %f  yaw: %f\n", cub->ploc.x, cub->ploc.y,
+			cub->pyaw);
+		t_vec2f v = yawtovec(cub->pyaw);
+		printf("vdir: %f %f\n", v.x, v.y);
+	}
 	return (0);
 }
 
@@ -98,7 +106,7 @@ void	initgraph(t_cub *cub)
 	// if (!sl->mlx_ptr)
 	//	close_window(sl, 1);
 	cub->window = mlx_new_window(cub->mlx_ptr, cub->win_res.x, cub->win_res.y,
-			"KKlum!");
+			"Ultimate cub3d");
 	printf("x %d y %d\n", cub->win_res.x, cub->win_res.y);
 	cub->framebuff.img = mlx_new_image(cub->mlx_ptr, cub->win_res.x,
 			cub->win_res.y);

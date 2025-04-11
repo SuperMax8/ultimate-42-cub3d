@@ -45,6 +45,7 @@ typedef struct cub
 	bool		backwardpress;
 	bool		leftpress;
 	bool		rightpress;
+	t_vec2f		lastploc;
 	t_vec2f		ploc;
 	float		pyaw;
 	void		*mlx_ptr;
@@ -84,5 +85,7 @@ void			initgraph(t_cub *sl);
 void			renderframe(t_cub *cub);
 
 t_vec2f			yawtovec(float yaw);
+float			toradian(float degrees);
+float			distance(t_vec2f first, t_vec2f second);
 
 #endif

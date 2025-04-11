@@ -13,7 +13,7 @@ int	main(void)
 	cub.rightpress = false;
 
 	cub.map = malloc(sizeof(char *) * 12);
-    cub.map[0] = "001001000000000000000";
+    cub.map[0] = "001101000100000000000";
     cub.map[1] = "100000000100000000000";
     cub.map[2] = "000000000000000000000";
     cub.map[3] = "100000000100000000000";
