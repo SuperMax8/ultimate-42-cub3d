@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:28:01 by dtheron           #+#    #+#             */
-/*   Updated: 2025/04/11 19:05:09 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/04/12 01:52:00 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "cub.h"
 #include <fcntl.h>
 
@@ -44,12 +43,12 @@ int	main(int count, char **args)
 	static t_cub		cub;
 	if (count != 2)
 	{
-		ft_printf("not the right number of args");
+		printf("not the right number of args");
 		return (0);
 	}
 	if (checkcub(args[1]))
 	{
-		ft_printf("its not a *.cub file");
+		printf("its not a *.cub file");
 		return (0);
 	}
 	map.fd = open(args[1], O_RDONLY);
@@ -60,7 +59,7 @@ int	main(int count, char **args)
 	int d = 0;
 	while (map.file[d])
 	{
-		ft_printf("%s", map.file[d]);
+		printf("%s", map.file[d]);
 		d++;
 	}
 	close(map.fd);
@@ -71,6 +70,6 @@ int	main(int count, char **args)
 		return (0);
 	}
 	//mini(map);
-	ft_printf("Error\n");
+	printf("Error\n");
 	return (1);
 }

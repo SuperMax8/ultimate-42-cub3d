@@ -3,37 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/11 22:53:11 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/04/12 01:59:02 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
-#define FOV 35
+#define FOV 70
 
-int	create_trgb(int t, int r, int g, int b)
+int create_trgb(int t, int r, int g, int b)
 {
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
-void	drawpixel(t_cub *cub, int x, int y, int color)
+void drawpixel(t_cub *cub, int x, int y, int color)
 {
-	char	*dst;
+	char *dst;
 
 	if (x >= 0 && x < cub->win_res.x && y >= 0 && y < cub->win_res.y)
 	{
-		dst = cub->framebuff.addr + (y * cub->framebuff.line_length + x
-				* (cub->framebuff.bits_per_pixel / 8));
+		dst = cub->framebuff.addr + (y * cub->framebuff.line_length + x * (cub->framebuff.bits_per_pixel / 8));
 		*(unsigned int *)dst = color;
 	}
 }
 
-void	drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
+void drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 {
-	int	i;
-	int	j;
+	int i;
+	int j;
 
 	i = 0;
 	while (i < size)
@@ -48,10 +47,10 @@ void	drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 	}
 }
 
-void	fillfloor(t_cub *cub, int color)
+void fillfloor(t_cub *cub, int color)
 {
-	int	y;
-	int	x;
+	int y;
+	int x;
 
 	y = cub->win_res.y / 2;
 	while (y < cub->win_res.y)
@@ -66,10 +65,10 @@ void	fillfloor(t_cub *cub, int color)
 	}
 }
 
-void	fillcolor(t_cub *cub, int color)
+void fillcolor(t_cub *cub, int color)
 {
-	int	y;
-	int	x;
+	int y;
+	int x;
 
 	y = 0;
 	while (y < cub->win_res.y)
@@ -84,39 +83,36 @@ void	fillcolor(t_cub *cub, int color)
 	}
 }
 
-void	renderwall(t_cub *cub, int collumn, float distance)
+void renderwall(t_cub *cub, int collumn, float distance)
 {
-	float	sizeper;
-	int		ysize;
-	int		y;
-	int		yend;
+	float sizeper;
+	int ysize;
+	int y;
+	int yend;
 
 	sizeper = 1 / distance + 0.0001f;
 	if (sizeper <= 0)
-		return ;
+		return;
 	ysize = cub->win_res.y * sizeper;
 	y = cub->win_res.y / 2 - ysize / 2;
 	yend = cub->win_res.y / 2 + ysize / 2;
-	// printf("sizeper: %f ysize: %d y: %d yend: %d\n", sizeper, ysize, y,
-	// yend);
 	while (y < yend)
 	{
 		drawpixel(cub, collumn, y, 234543556);
 		y++;
 	}
-	// fillcolor(cub, 234543556);
 }
 
 /**
  * Raycast for walls and return the hit position if wall found or NULL
  */
-t_vec2f	*raycastwall(t_cub *cub, t_vec2f direction)
+t_vec2f *raycastwall(t_cub *cub, t_vec2f direction)
 {
-	float	i;
-	t_vec2f	lastpos;
-	t_vec2f	pos;
-	t_vec2f	*val;
-	bool	hit;
+	float i;
+	t_vec2f lastpos;
+	t_vec2f pos;
+	t_vec2f *val;
+	bool hit;
 
 	hit = false;
 	i = 0;
@@ -124,17 +120,19 @@ t_vec2f	*raycastwall(t_cub *cub, t_vec2f direction)
 	{
 		pos.x = direction.x * i + cub->ploc.x;
 		pos.y = direction.y * i + cub->ploc.y;
-		// printf("pos: %f %f\n", pos.x, pos.y);
 		drawpixel(cub, pos.x * 20, pos.y * 20, 3278079);
-		if (i > 30 || pos.x < 0 || pos.x > 5 || pos.y < 0 || pos.y > 5)
+		if (i > 30)
 			return (NULL);
-		if (cub->map[(int)pos.y][(int)pos.x] == '1')
+		if (pos.x > 0 && pos.x < 5 && pos.y > 0 && pos.y < 5)
 		{
-			hit = true;
-			break ;
+			if (cub->map[(int)pos.y][(int)pos.x] == '1')
+			{
+				hit = true;
+				break;
+			}
+			lastpos = pos;
 		}
 		i += 0.01;
-		lastpos = pos;
 	}
 	if (i != 0 && hit)
 	{
@@ -146,12 +144,12 @@ t_vec2f	*raycastwall(t_cub *cub, t_vec2f direction)
 	return (NULL);
 }
 
-void	printmap(t_cub *cub)
+void printmap(t_cub *cub)
 {
-	int		y;
-	int		x;
-	t_vec2	coord;
-	t_vec2f	dir;
+	int y;
+	int x;
+	t_vec2 coord;
+	t_vec2f dir;
 
 	y = 0;
 	while (y < 5)
@@ -170,21 +168,20 @@ void	printmap(t_cub *cub)
 		y++;
 	}
 	drawsqare(cub, (t_vec2){cub->ploc.x * 20, cub->ploc.y * 20}, 10,
-		0x00FF00FF);
+			  0x00FF00FF);
 	dir = yawtovec(cub->pyaw);
-	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10, cub->ploc.y * 20
-		+ dir.y * 10}, 5, 0x00FF00FF);
+	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10, cub->ploc.y * 20 + dir.y * 10}, 5, 0x00FF00FF);
 }
 
-void	renderframe(t_cub *cub)
+void renderframe(t_cub *cub)
 {
-	int		x;
-	float	rayangle;
-	t_vec2f	raydir;
-	t_vec2f	*wallpos;
-	float	dist;
-	float	angle_diff;
-	float	corrected_dist;
+	int x;
+	float rayangle;
+	t_vec2f raydir;
+	t_vec2f *wallpos;
+	float dist;
+	float angle_diff;
+	float corrected_dist;
 
 	fillcolor(cub, 0);
 	fillfloor(cub, create_trgb(200, 0, 100, 50));
@@ -192,11 +189,9 @@ void	renderframe(t_cub *cub)
 	x = 0;
 	while (x < cub->win_res.x)
 	{
-		rayangle = (x / (float)cub->win_res.x * FOV * 2) - FOV;
+		rayangle = (x / (float)cub->win_res.x * FOV) - FOV / 2;
 		rayangle = fmod(fmod(rayangle + cub->pyaw, 360.0f) + 360.0f, 360.0f);
 		raydir = yawtovec(rayangle);
-		// printf("Ray angle: %f\n", rayangle);
-		// printf("Ray dir: %f %f\n", raydir.x, raydir.y);
 		wallpos = raycastwall(cub, raydir);
 		if (wallpos)
 		{

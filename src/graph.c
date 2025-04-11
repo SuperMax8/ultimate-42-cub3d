@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   graph.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:21 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/11 21:47:58 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/04/12 01:55:50 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	initgraph(t_cub *cub)
 	// if (!sl->mlx_ptr)
 	//	close_window(sl, 1);
 	cub->window = mlx_new_window(cub->mlx_ptr, cub->win_res.x, cub->win_res.y,
-			"Ultimate cub3d");
+			"Klum3D");
 	printf("x %d y %d\n", cub->win_res.x, cub->win_res.y);
 	cub->framebuff.img = mlx_new_image(cub->mlx_ptr, cub->win_res.x,
 			cub->win_res.y);
