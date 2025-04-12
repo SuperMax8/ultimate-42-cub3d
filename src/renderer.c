@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 03:03:14 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 03:09:29 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,15 +141,15 @@ void renderwall(t_cub *cub, int collumn, float distance, char face)
 	ysize = cub->win_res.y * sizeper;
 	y = cub->win_res.y / 2 - ysize / 2;
 	yend = cub->win_res.y / 2 + ysize / 2;
-	int color = 234543556;
+	int color;
 	if (face == 'N')
-		color *= 2;
+		color = create_trgb(0, 255, 0, 0);
 	else if (face == 'S')
-		color *= -2;
+		color = create_trgb(0, 0, 255, 0);
 	else if (face == 'W')
-		color *= 3;
-	else if (face == 'e')
-		color *= -3;
+		color = create_trgb(0, 255, 0, 255);
+	else if (face == 'E')
+		color = create_trgb(0, 0, 255, 255);
 	while (y < yend)
 	{
 		drawpixel(cub, collumn, y, color);
@@ -229,14 +229,14 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 	result->hit.y = cub->ploc.y + raydir.y * distance;
 	if (side == 0)
 	{
-		if (mapX > result->hit.x)
-			result->face = 'E';
-		else
+		if (stepX > 0)
 			result->face = 'W';
+		else
+			result->face = 'E';
 	}
 	else
 	{
-		if (mapY > result->hit.y)
+		if (stepY > 0)
 			result->face = 'N';
 		else
 			result->face = 'S';
@@ -286,8 +286,8 @@ void renderframe(t_cub *cub)
 	float angle_diff;
 	float corrected_dist;
 
-	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80, 176), (int []){0, 0, cub->win_res.x, cub->win_res.y / 2});
-	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224, 48), (int []){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y / 2});
+	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80, 176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
+	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224, 48), (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y / 2});
 	printmap(cub);
 	x = 0;
 	while (x < cub->win_res.x)
@@ -301,6 +301,7 @@ void renderframe(t_cub *cub)
 			angle_diff = toradian(rayangle - cub->pyaw);
 			corrected_dist = cos(angle_diff) * distance(cub->ploc, ray->hit);
 			renderwall(cub, x, corrected_dist, ray->face);
+			free(ray);
 		}
 		x++;
 	}
