@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vecutils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:14 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/11 21:24:33 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/04/12 03:50:47 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,29 @@ float	toradian(float degrees)
 	return (degrees * (M_PI / 180.0));
 }
 
+float	todegrees(float rad)
+{
+	return (rad * (180.0 / M_PI));
+}
+
+float	normyaw(float yaw)
+{
+	return (fmod(fmod(yaw, 360.0f) + 360.0f, 360.0f));
+}
+
 t_vec2f	yawtovec(float yaw)
 {
 	t_vec2f	v;
 
-	yaw = fmod(fmod(yaw, 360.0f) + 360.0f, 360.0f);
+	yaw = normyaw(yaw - 90.0f);
 	v.x = cos(toradian(yaw));
 	v.y = sin(toradian(yaw));
 	return (v);
+}
+
+float vectoyaw(t_vec2f vec)
+{
+	return normyaw(todegrees(atan2(vec.y, vec.x)) + 90.0f);
 }
 
 float	distance(t_vec2f first, t_vec2f second)

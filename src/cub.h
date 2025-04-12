@@ -49,10 +49,8 @@ typedef struct cub
 	char **map;
 	int mwidth;
 	int mheight;
-	bool forwardpress;
-	bool backwardpress;
-	bool leftpress;
-	bool rightpress;
+	t_vec2f movement;
+	float rotation;
 	t_vec2f lastploc;
 	t_vec2f ploc;
 	float pyaw;
@@ -93,7 +91,10 @@ void initgraph(t_cub *sl);
 void renderframe(t_cub *cub);
 
 t_vec2f yawtovec(float yaw);
+float vectoyaw(t_vec2f vec);
+float normyaw(float yaw);
 float toradian(float degrees);
+float todegrees(float rad);
 float distance(t_vec2f first, t_vec2f second);
 
 #endif

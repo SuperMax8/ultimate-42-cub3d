@@ -7,10 +7,9 @@ int	main(void)
 	cub.win_res.y = 9 * 100;
 	cub.ploc.x = 0;
 	cub.ploc.y = 0;
-	cub.forwardpress = false;
-	cub.backwardpress = false;
-	cub.leftpress = false;
-	cub.rightpress = false;
+	cub.movement.x = 0;
+	cub.movement.y = 0;
+	cub.rotation = 0;
 
 	cub.map = malloc(sizeof(char *) * 12);
     cub.map[0] = "001101000100000000100";
