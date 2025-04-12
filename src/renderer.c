@@ -6,12 +6,12 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 05:31:42 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 05:51:42 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
-#define FOV 70
+#define FOV 75
 
 int create_trgb(int t, int r, int g, int b)
 {
@@ -336,7 +336,7 @@ void renderframe(t_cub *cub)
 	while (x < cub->win_res.x)
 	{
 		rayangle = (x / (float)cub->win_res.x * FOV) - FOV / 2;
-		rayangle = fmod(fmod(rayangle + cub->pyaw, 360.0f) + 360.0f, 360.0f);
+		rayangle = normyaw(rayangle + cub->pyaw);
 		raydir = yawtovec(rayangle);
 		ray = raycastwall(cub, raydir);
 		if (ray)
