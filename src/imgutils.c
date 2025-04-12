@@ -44,23 +44,25 @@ void destroyimg(t_cub *cub, t_img *img)
     free(img);
 }
 
-int	getpixel(t_img *img, int x, int y)
+int getpixel(t_img *img, int x, int y)
 {
-	char	*pixel;
-	int		color;
+    char *pixel;
+    int color;
 
-	pixel = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
-	color = *(unsigned int *)pixel;
-	return (color);
+    x = CLAMP(x, 0, img->width);
+    y = CLAMP(y, 0, img->height);
+    pixel = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+    color = *(unsigned int *)pixel;
+    return (color);
 }
 
 void drawpixel(t_img *img, int x, int y, int color)
 {
-	char *dst;
+    char *dst;
 
-	if (x >= 0 && x < img->width && y >= 0 && y < img->height)
-	{
-		dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
-		*(unsigned int *)dst = color;
-	}
+    if (x >= 0 && x < img->width && y >= 0 && y < img->height)
+    {
+        dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+        *(unsigned int *)dst = color;
+    }
 }

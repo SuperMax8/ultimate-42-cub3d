@@ -16,6 +16,8 @@
 #define WALL '1'
 #define VOID '0'
 
+#define CLAMP(x, min, max) ((x) < (min) ? (min) : ((x) > (max) ? (max) : (x)))
+
 typedef struct vec2
 {
 	int x;
@@ -43,6 +45,7 @@ typedef struct s_rayresult
 {
 	t_vec2f hit;
 	char face;
+	float rayangle;
 } t_rayresult;
 
 typedef struct cub

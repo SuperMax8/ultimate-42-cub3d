@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 04:38:47 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 05:03:30 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int lerp_color(int color1, int color2, float f)
 
 	return create_trgb(t, r, g, b);
 }
-
 
 void drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 {
@@ -118,31 +117,50 @@ void fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
 	}
 }
 
-void renderwall(t_cub *cub, int collumn, float distance, char face)
+void renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 {
 	float sizeper;
 	int ysize;
 	int y;
 	int yend;
+	t_img *texture;
+	float worldcol;
+	float colper;
+	int texturecol;
+	float dist;
 
-	sizeper = 1 / distance + 0.0001f;
+	dist = cos(toradian(ray->rayangle - cub->pyaw)) * distance(cub->ploc, ray->hit);
+	sizeper = 1 / dist + 0.0001f;
 	if (sizeper <= 0)
 		return;
 	ysize = cub->win_res.y * sizeper;
 	y = cub->win_res.y / 2 - ysize / 2;
 	yend = cub->win_res.y / 2 + ysize / 2;
-	int color;
-	if (face == NORTH)
-		color = create_trgb(0, 255, 0, 0);
-	else if (face == SOUTH)
-		color = create_trgb(0, 0, 255, 0);
-	else if (face == WEST)
-		color = create_trgb(0, 255, 0, 255);
-	else if (face == EAST)
-		color = create_trgb(0, 0, 255, 255);
+	if (ray->face == NORTH)
+	{
+		texture = cub->img_n;
+		worldcol = ray->hit.x;
+	}
+	else if (ray->face == SOUTH)
+	{
+		texture = cub->img_s;
+		worldcol = ray->hit.x;
+	}
+	else if (ray->face == WEST)
+	{
+		texture = cub->img_w;
+		worldcol = ray->hit.y;
+	}
+	else if (ray->face == EAST)
+	{
+		texture = cub->img_e;
+		worldcol = ray->hit.y;
+	}
+	colper = worldcol - ((int) worldcol);
+	texturecol = texture->width * colper;
 	while (y < yend)
 	{
-		drawpixel(cub->framebuff, collumn, y, color);
+		drawpixel(cub->framebuff, screencol, y, getpixel(texture, texturecol, y / (float) yend * texture->height));
 		y++;
 	}
 }
@@ -272,9 +290,6 @@ void renderframe(t_cub *cub)
 	float rayangle;
 	t_vec2f raydir;
 	t_rayresult *ray;
-	float dist;
-	float angle_diff;
-	float corrected_dist;
 
 	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80, 176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
 	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224, 48), (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y / 2});
@@ -288,9 +303,8 @@ void renderframe(t_cub *cub)
 		ray = raycastwall(cub, raydir);
 		if (ray)
 		{
-			angle_diff = toradian(rayangle - cub->pyaw);
-			corrected_dist = cos(angle_diff) * distance(cub->ploc, ray->hit);
-			renderwall(cub, x, corrected_dist, ray->face);
+			ray->rayangle = rayangle;
+			renderwall(cub, x, ray);
 			free(ray);
 		}
 		x++;
