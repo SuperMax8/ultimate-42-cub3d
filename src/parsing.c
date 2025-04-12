@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:30:10 by dtheron           #+#    #+#             */
-/*   Updated: 2025/04/11 19:06:51 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/04/12 03:57:44 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "get_next_line.h"
 #include "cub.h"
 

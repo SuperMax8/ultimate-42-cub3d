@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 03:09:29 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 04:38:47 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,6 @@ int lerp_color(int color1, int color2, float f)
 	return create_trgb(t, r, g, b);
 }
 
-void drawpixel(t_cub *cub, int x, int y, int color)
-{
-	char *dst;
-
-	if (x >= 0 && x < cub->win_res.x && y >= 0 && y < cub->win_res.y)
-	{
-		dst = cub->framebuff.addr + (y * cub->framebuff.line_length + x * (cub->framebuff.bits_per_pixel / 8));
-		*(unsigned int *)dst = color;
-	}
-}
 
 void drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 {
@@ -65,7 +55,7 @@ void drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 		j = 0;
 		while (j < size)
 		{
-			drawpixel(cub, coord.x + i, coord.y + j, color);
+			drawpixel(cub->framebuff, coord.x + i, coord.y + j, color);
 			j++;
 		}
 		i++;
@@ -83,7 +73,7 @@ void fillfloor(t_cub *cub, int color)
 		x = 0;
 		while (x < cub->win_res.x)
 		{
-			drawpixel(cub, x, y, color);
+			drawpixel(cub->framebuff, x, y, color);
 			x++;
 		}
 		y++;
@@ -101,7 +91,7 @@ void fillcolor(t_cub *cub, int color)
 		x = 0;
 		while (x < cub->win_res.x)
 		{
-			drawpixel(cub, x, y, color);
+			drawpixel(cub->framebuff, x, y, color);
 			x++;
 		}
 		y++;
@@ -121,7 +111,7 @@ void fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
 		color = lerp_color(color1, color2, y / (float)xywh[2]);
 		while (x < xywh[2])
 		{
-			drawpixel(cub, x + xywh[0], y + xywh[1], color);
+			drawpixel(cub->framebuff, x + xywh[0], y + xywh[1], color);
 			x++;
 		}
 		y++;
@@ -142,17 +132,17 @@ void renderwall(t_cub *cub, int collumn, float distance, char face)
 	y = cub->win_res.y / 2 - ysize / 2;
 	yend = cub->win_res.y / 2 + ysize / 2;
 	int color;
-	if (face == 'N')
+	if (face == NORTH)
 		color = create_trgb(0, 255, 0, 0);
-	else if (face == 'S')
+	else if (face == SOUTH)
 		color = create_trgb(0, 0, 255, 0);
-	else if (face == 'W')
+	else if (face == WEST)
 		color = create_trgb(0, 255, 0, 255);
-	else if (face == 'E')
+	else if (face == EAST)
 		color = create_trgb(0, 0, 255, 255);
 	while (y < yend)
 	{
-		drawpixel(cub, collumn, y, color);
+		drawpixel(cub->framebuff, collumn, y, color);
 		y++;
 	}
 }
@@ -230,16 +220,16 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 	if (side == 0)
 	{
 		if (stepX > 0)
-			result->face = 'W';
+			result->face = WEST;
 		else
-			result->face = 'E';
+			result->face = EAST;
 	}
 	else
 	{
 		if (stepY > 0)
-			result->face = 'N';
+			result->face = NORTH;
 		else
-			result->face = 'S';
+			result->face = SOUTH;
 	}
 	return (result);
 }
@@ -259,9 +249,9 @@ void printmap(t_cub *cub)
 		{
 			coord.x = x * 20;
 			coord.y = y * 20;
-			if (cub->map[y][x] == '1')
+			if (cub->map[y][x] == WALL)
 				drawsqare(cub, coord, 20, 0x00FF0000);
-			else if (cub->map[y][x] == '0')
+			else if (cub->map[y][x] == VOID)
 				drawsqare(cub, coord, 20, 0x00043200);
 			x++;
 		}

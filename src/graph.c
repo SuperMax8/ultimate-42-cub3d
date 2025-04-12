@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:21 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 03:55:51 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 04:37:23 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static void keyhandle(t_cub *cub, int keycode, bool value)
 		*ptr = val;
 	else if (*ptr == val)
 		*ptr = 0;
-	//printf("keycode: %d\n", keycode);
+	// printf("keycode: %d\n", keycode);
 }
 
 static int handle_keypress(int keycode, t_cub *cub)
@@ -103,8 +103,7 @@ int loop(t_cub *cub)
 {
 	moverot(cub);
 	renderframe(cub);
-	mlx_put_image_to_window(cub->mlx_ptr, cub->window, cub->framebuff.img, 0,
-							0);
+	mlx_put_image_to_window(cub->mlx_ptr, cub->window, cub->framebuff->img, 0, 0);
 	cub->t++;
 	return (0);
 }
@@ -119,12 +118,12 @@ void initgraph(t_cub *cub)
 	//	close_window(sl, 1);
 	cub->window = mlx_new_window(cub->mlx_ptr, cub->win_res.x, cub->win_res.y,
 								 "Klum3D");
+	cub->img_n = loadimg(cub, "textures/blackstone.xpm");
+	cub->img_s = loadimg(cub, "textures/blackstone.xpm");
+	cub->img_w = loadimg(cub, "textures/blackstone.xpm");
+	cub->img_e = loadimg(cub, "textures/blackstone.xpm");
 	printf("x %d y %d\n", cub->win_res.x, cub->win_res.y);
-	cub->framebuff.img = mlx_new_image(cub->mlx_ptr, cub->win_res.x,
-									   cub->win_res.y);
-	cub->framebuff.addr = mlx_get_data_addr(cub->framebuff.img,
-											&cub->framebuff.bits_per_pixel, &cub->framebuff.line_length,
-											&cub->framebuff.endian);
+	cub->framebuff = newimg(cub, cub->win_res.x, cub->win_res.y);
 	mlx_hook(cub->window, KeyPress, KeyPressMask, &handle_keypress, cub);
 	mlx_hook(cub->window, KeyRelease, KeyReleaseMask, &handle_keyrelease, cub);
 	mlx_loop_hook(cub->mlx_ptr, loop, cub);

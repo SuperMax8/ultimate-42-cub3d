@@ -31,11 +31,13 @@ typedef struct vec2f
 typedef struct s_imgdata
 {
 	void *img;
+	int width;
+	int height;
 	char *addr;
 	int bits_per_pixel;
 	int line_length;
 	int endian;
-} t_imgdata;
+} t_img;
 
 typedef struct s_rayresult
 {
@@ -57,13 +59,13 @@ typedef struct cub
 	void *mlx_ptr;
 	void *window;
 	t_vec2 win_res;
-	t_imgdata framebuff;
+	t_img *framebuff;
 	int color_ceiling;
 	int color_floor;
-	void *img_n;
-	void *img_s;
-	void *img_e;
-	void *img_w;
+	t_img *img_n;
+	t_img *img_s;
+	t_img *img_e;
+	t_img *img_w;
 } t_cub;
 
 typedef struct s_map
@@ -96,5 +98,11 @@ float normyaw(float yaw);
 float toradian(float degrees);
 float todegrees(float rad);
 float distance(t_vec2f first, t_vec2f second);
+
+t_img *loadimg(t_cub *cub, char *file);
+t_img *newimg(t_cub *cub, int width, int height);
+void destroyimg(t_cub *cub, t_img *img);
+int getpixel(t_img *img, int x, int y);
+void drawpixel(t_img *img, int x, int y, int color);
 
 #endif

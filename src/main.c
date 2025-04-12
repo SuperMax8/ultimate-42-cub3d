@@ -23,6 +23,5 @@ int	main(void)
 	cub.ploc.y = 3;
 	cub.mheight = 7;
 	cub.mwidth = 20;
-
 	initgraph(&cub);
 }
