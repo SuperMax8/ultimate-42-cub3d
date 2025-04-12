@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 01:59:02 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 03:03:14 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,31 @@
 int create_trgb(int t, int r, int g, int b)
 {
 	return (t << 24 | r << 16 | g << 8 | b);
+}
+
+float lerp(float a, float b, float f)
+{
+	return a + f * (b - a);
+}
+
+int lerp_color(int color1, int color2, float f)
+{
+	int t1 = (color1 >> 24) & 0xFF;
+	int r1 = (color1 >> 16) & 0xFF;
+	int g1 = (color1 >> 8) & 0xFF;
+	int b1 = (color1) & 0xFF;
+
+	int t2 = (color2 >> 24) & 0xFF;
+	int r2 = (color2 >> 16) & 0xFF;
+	int g2 = (color2 >> 8) & 0xFF;
+	int b2 = (color2) & 0xFF;
+
+	int t = (int)lerp((float)t1, (float)t2, f);
+	int r = (int)lerp((float)r1, (float)r2, f);
+	int g = (int)lerp((float)g1, (float)g2, f);
+	int b = (int)lerp((float)b1, (float)b2, f);
+
+	return create_trgb(t, r, g, b);
 }
 
 void drawpixel(t_cub *cub, int x, int y, int color)
@@ -83,7 +108,27 @@ void fillcolor(t_cub *cub, int color)
 	}
 }
 
-void renderwall(t_cub *cub, int collumn, float distance)
+void fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
+{
+	int y;
+	int x;
+	int color;
+
+	y = 0;
+	while (y < xywh[3])
+	{
+		x = 0;
+		color = lerp_color(color1, color2, y / (float)xywh[2]);
+		while (x < xywh[2])
+		{
+			drawpixel(cub, x + xywh[0], y + xywh[1], color);
+			x++;
+		}
+		y++;
+	}
+}
+
+void renderwall(t_cub *cub, int collumn, float distance, char face)
 {
 	float sizeper;
 	int ysize;
@@ -96,9 +141,18 @@ void renderwall(t_cub *cub, int collumn, float distance)
 	ysize = cub->win_res.y * sizeper;
 	y = cub->win_res.y / 2 - ysize / 2;
 	yend = cub->win_res.y / 2 + ysize / 2;
+	int color = 234543556;
+	if (face == 'N')
+		color *= 2;
+	else if (face == 'S')
+		color *= -2;
+	else if (face == 'W')
+		color *= 3;
+	else if (face == 'e')
+		color *= -3;
 	while (y < yend)
 	{
-		drawpixel(cub, collumn, y, 234543556);
+		drawpixel(cub, collumn, y, color);
 		y++;
 	}
 }
@@ -106,42 +160,88 @@ void renderwall(t_cub *cub, int collumn, float distance)
 /**
  * Raycast for walls and return the hit position if wall found or NULL
  */
-t_vec2f *raycastwall(t_cub *cub, t_vec2f direction)
+t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 {
-	float i;
-	t_vec2f lastpos;
-	t_vec2f pos;
-	t_vec2f *val;
-	bool hit;
+	int mapX = (int)cub->ploc.x;
+	int mapY = (int)cub->ploc.y;
 
-	hit = false;
-	i = 0;
-	while (true)
+	float deltaDistX = fabs(1.0f / raydir.x);
+	float deltaDistY = fabs(1.0f / raydir.y);
+
+	int stepX;
+	int stepY;
+	float sideDistX;
+	float sideDistY;
+
+	int hit = 0;
+	int side;
+
+	if (raydir.x < 0)
 	{
-		pos.x = direction.x * i + cub->ploc.x;
-		pos.y = direction.y * i + cub->ploc.y;
-		drawpixel(cub, pos.x * 20, pos.y * 20, 3278079);
-		if (i > 30)
-			return (NULL);
-		if (pos.x > 0 && pos.x < 5 && pos.y > 0 && pos.y < 5)
+		stepX = -1;
+		sideDistX = (cub->ploc.x - mapX) * deltaDistX;
+	}
+	else
+	{
+		stepX = 1;
+		sideDistX = (mapX + 1.0f - cub->ploc.x) * deltaDistX;
+	}
+
+	if (raydir.y < 0)
+	{
+		stepY = -1;
+		sideDistY = (cub->ploc.y - mapY) * deltaDistY;
+	}
+	else
+	{
+		stepY = 1;
+		sideDistY = (mapY + 1.0f - cub->ploc.y) * deltaDistY;
+	}
+	while (!hit)
+	{
+		if (sideDistX < sideDistY)
 		{
-			if (cub->map[(int)pos.y][(int)pos.x] == '1')
-			{
-				hit = true;
-				break;
-			}
-			lastpos = pos;
+			sideDistX += deltaDistX;
+			mapX += stepX;
+			side = 0;
 		}
-		i += 0.01;
+		else
+		{
+			sideDistY += deltaDistY;
+			mapY += stepY;
+			side = 1;
+		}
+		if (mapX < 0 || mapX >= cub->mwidth || mapY < 0 || mapY >= cub->mheight)
+			return (NULL);
+		if (cub->map[mapY][mapX] == '1')
+			hit = 1;
 	}
-	if (i != 0 && hit)
+	float distance;
+	if (side == 0)
+		distance = (mapX - cub->ploc.x + (1 - stepX) / 2.0f) / raydir.x;
+	else
+		distance = (mapY - cub->ploc.y + (1 - stepY) / 2.0f) / raydir.y;
+
+	t_rayresult *result = malloc(sizeof(t_rayresult));
+	if (!result)
+		return (NULL);
+	result->hit.x = cub->ploc.x + raydir.x * distance;
+	result->hit.y = cub->ploc.y + raydir.y * distance;
+	if (side == 0)
 	{
-		val = malloc(sizeof(t_vec2f));
-		val->x = lastpos.x;
-		val->y = lastpos.y;
-		return (val);
+		if (mapX > result->hit.x)
+			result->face = 'E';
+		else
+			result->face = 'W';
 	}
-	return (NULL);
+	else
+	{
+		if (mapY > result->hit.y)
+			result->face = 'N';
+		else
+			result->face = 'S';
+	}
+	return (result);
 }
 
 void printmap(t_cub *cub)
@@ -173,18 +273,21 @@ void printmap(t_cub *cub)
 	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10, cub->ploc.y * 20 + dir.y * 10}, 5, 0x00FF00FF);
 }
 
+/**
+ * Render the frame on the buffer img
+ */
 void renderframe(t_cub *cub)
 {
 	int x;
 	float rayangle;
 	t_vec2f raydir;
-	t_vec2f *wallpos;
+	t_rayresult *ray;
 	float dist;
 	float angle_diff;
 	float corrected_dist;
 
-	fillcolor(cub, 0);
-	fillfloor(cub, create_trgb(200, 0, 100, 50));
+	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80, 176), (int []){0, 0, cub->win_res.x, cub->win_res.y / 2});
+	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224, 48), (int []){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y / 2});
 	printmap(cub);
 	x = 0;
 	while (x < cub->win_res.x)
@@ -192,12 +295,12 @@ void renderframe(t_cub *cub)
 		rayangle = (x / (float)cub->win_res.x * FOV) - FOV / 2;
 		rayangle = fmod(fmod(rayangle + cub->pyaw, 360.0f) + 360.0f, 360.0f);
 		raydir = yawtovec(rayangle);
-		wallpos = raycastwall(cub, raydir);
-		if (wallpos)
+		ray = raycastwall(cub, raydir);
+		if (ray)
 		{
 			angle_diff = toradian(rayangle - cub->pyaw);
-			corrected_dist = cos(angle_diff) * distance(cub->ploc, *wallpos);
-			renderwall(cub, x, corrected_dist);
+			corrected_dist = cos(angle_diff) * distance(cub->ploc, ray->hit);
+			renderwall(cub, x, corrected_dist, ray->face);
 		}
 		x++;
 	}
