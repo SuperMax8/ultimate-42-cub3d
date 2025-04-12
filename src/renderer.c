@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 05:03:30 by max              ###   ########.fr       */
+/*   Updated: 2025/04/12 05:31:42 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,25 @@ int lerp_color(int color1, int color2, float f)
 	int r = (int)lerp((float)r1, (float)r2, f);
 	int g = (int)lerp((float)g1, (float)g2, f);
 	int b = (int)lerp((float)b1, (float)b2, f);
+
+	return create_trgb(t, r, g, b);
+}
+
+int darken_color(int color, float factor)
+{
+	if (factor < 0.0f)
+		factor = 0.0f;
+	if (factor > 1.0f)
+		factor = 1.0f;
+
+	int t = (color >> 24) & 0xFF;
+	int r = (color >> 16) & 0xFF;
+	int g = (color >> 8) & 0xFF;
+	int b = color & 0xFF;
+
+	r = (int)(r * factor);
+	g = (int)(g * factor);
+	b = (int)(b * factor);
 
 	return create_trgb(t, r, g, b);
 }
@@ -128,6 +147,9 @@ void renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 	float colper;
 	int texturecol;
 	float dist;
+	int wallheight;
+	int i;
+	float brightness = 0;
 
 	dist = cos(toradian(ray->rayangle - cub->pyaw)) * distance(cub->ploc, ray->hit);
 	sizeper = 1 / dist + 0.0001f;
@@ -140,28 +162,44 @@ void renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 	{
 		texture = cub->img_n;
 		worldcol = ray->hit.x;
+		brightness = 1;
 	}
 	else if (ray->face == SOUTH)
 	{
 		texture = cub->img_s;
 		worldcol = ray->hit.x;
+		brightness = 0.65;
 	}
 	else if (ray->face == WEST)
 	{
 		texture = cub->img_w;
 		worldcol = ray->hit.y;
+		brightness = 0.75;
 	}
 	else if (ray->face == EAST)
 	{
 		texture = cub->img_e;
 		worldcol = ray->hit.y;
+		brightness = 0.9;
 	}
-	colper = worldcol - ((int) worldcol);
+	colper = worldcol - ((int)worldcol);
 	texturecol = texture->width * colper;
-	while (y < yend)
+	wallheight = yend - y;
+
+	int lastty = -1;
+	int color;
+	i = 0;
+	while (i < wallheight)
 	{
-		drawpixel(cub->framebuff, screencol, y, getpixel(texture, texturecol, y / (float) yend * texture->height));
-		y++;
+		int ty = (i / (float)wallheight) * texture->height;
+		if (lastty != ty)
+		{
+			color = getpixel(texture, texturecol, ty);
+			color = darken_color(color, brightness);
+			lastty = ty;
+		}
+		drawpixel(cub->framebuff, screencol, y + i, color);
+		i++;
 	}
 }
 
