@@ -6,12 +6,13 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 05:51:42 by max              ###   ########.fr       */
+/*   Updated: 2025/04/13 13:35:00 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 #define FOV 75
+#define RENDER_DISTANCE 30
 
 int create_trgb(int t, int r, int g, int b)
 {
@@ -219,9 +220,12 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 	float sideDistX;
 	float sideDistY;
 
-	int hit = 0;
+	bool hit;
 	int side;
+	int i;
 
+	i = 0;
+	hit = false;
 	if (raydir.x < 0)
 	{
 		stepX = -1;
@@ -243,6 +247,7 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 		stepY = 1;
 		sideDistY = (mapY + 1.0f - cub->ploc.y) * deltaDistY;
 	}
+
 	while (!hit)
 	{
 		if (sideDistX < sideDistY)
@@ -257,10 +262,13 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 			mapY += stepY;
 			side = 1;
 		}
-		if (mapX < 0 || mapX >= cub->mwidth || mapY < 0 || mapY >= cub->mheight)
+		if (i > RENDER_DISTANCE)
 			return (NULL);
-		if (cub->map[mapY][mapX] == '1')
-			hit = 1;
+		i++;
+		if (mapX < 0 || mapX >= cub->mwidth || mapY < 0 || mapY >= cub->mheight)
+			continue;
+		if (cub->map[mapY][mapX] == WALL)
+			hit = true;
 	}
 	float distance;
 	if (side == 0)
@@ -298,10 +306,10 @@ void printmap(t_cub *cub)
 	t_vec2f dir;
 
 	y = 0;
-	while (y < 5)
+	while (y < cub->mheight)
 	{
 		x = 0;
-		while (x < 5)
+		while (x < cub->mwidth)
 		{
 			coord.x = x * 20;
 			coord.y = y * 20;
@@ -331,7 +339,6 @@ void renderframe(t_cub *cub)
 
 	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80, 176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
 	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224, 48), (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y / 2});
-	printmap(cub);
 	x = 0;
 	while (x < cub->win_res.x)
 	{
@@ -347,4 +354,5 @@ void renderframe(t_cub *cub)
 		}
 		x++;
 	}
+	printmap(cub);
 }

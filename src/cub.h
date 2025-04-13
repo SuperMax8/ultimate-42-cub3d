@@ -102,6 +102,9 @@ float toradian(float degrees);
 float todegrees(float rad);
 float distance(t_vec2f first, t_vec2f second);
 
+void moverot(t_cub *cub);
+void listeninputs(t_cub *cub);
+
 t_img *loadimg(t_cub *cub, char *file);
 t_img *newimg(t_cub *cub, int width, int height);
 void destroyimg(t_cub *cub, t_img *img);
