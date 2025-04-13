@@ -49,8 +49,8 @@ int getpixel(t_img *img, int x, int y)
     char *pixel;
     int color;
 
-    x = CLAMP(x, 0, img->width);
-    y = CLAMP(y, 0, img->height);
+    x = clamp(x, 0, img->width);
+    y = clamp(y, 0, img->height);
     pixel = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
     color = *(unsigned int *)pixel;
     return (color);

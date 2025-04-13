@@ -8,7 +8,7 @@ RM			=	rm -rf
 CC			=	cc
 CFLAGS		=	-Wall -Wextra -Werror
 
-SRCS		=	src/main.c src/renderer.c src/vecutils.c src/graph.c src/imgutils.c src/movement.c
+SRCS		=	src/main.c src/renderer.c src/vecutils.c src/graph.c src/imgutils.c src/movement.c src/mathutils.c
 
 OBJS        = $(SRCS:.c=.o)
 

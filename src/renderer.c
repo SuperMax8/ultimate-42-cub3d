@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/13 14:16:19 by max              ###   ########.fr       */
+/*   Updated: 2025/04/13 14:42:32 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,59 +14,71 @@
 #define FOV 75
 #define RENDER_DISTANCE 30
 
-int create_trgb(int t, int r, int g, int b)
+int	create_trgb(int t, int r, int g, int b)
 {
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
-float lerp(float a, float b, float f)
+float	lerp(float a, float b, float f)
 {
-	return a + f * (b - a);
+	return (a + f * (b - a));
 }
 
-int lerp_color(int color1, int color2, float f)
+int	lerp_color(int color1, int color2, float f)
 {
-	int t1 = (color1 >> 24) & 0xFF;
-	int r1 = (color1 >> 16) & 0xFF;
-	int g1 = (color1 >> 8) & 0xFF;
-	int b1 = (color1) & 0xFF;
+	int	t1;
+	int	r1;
+	int	g1;
+	int	b1;
+	int	t2;
+	int	r2;
+	int	g2;
+	int	b2;
+	int	t;
+	int	r;
+	int	g;
+	int	b;
 
-	int t2 = (color2 >> 24) & 0xFF;
-	int r2 = (color2 >> 16) & 0xFF;
-	int g2 = (color2 >> 8) & 0xFF;
-	int b2 = (color2) & 0xFF;
-
-	int t = (int)lerp((float)t1, (float)t2, f);
-	int r = (int)lerp((float)r1, (float)r2, f);
-	int g = (int)lerp((float)g1, (float)g2, f);
-	int b = (int)lerp((float)b1, (float)b2, f);
-
-	return create_trgb(t, r, g, b);
+	t1 = (color1 >> 24) & 0xFF;
+	r1 = (color1 >> 16) & 0xFF;
+	g1 = (color1 >> 8) & 0xFF;
+	b1 = (color1)&0xFF;
+	t2 = (color2 >> 24) & 0xFF;
+	r2 = (color2 >> 16) & 0xFF;
+	g2 = (color2 >> 8) & 0xFF;
+	b2 = (color2)&0xFF;
+	t = (int)lerp((float)t1, (float)t2, f);
+	r = (int)lerp((float)r1, (float)r2, f);
+	g = (int)lerp((float)g1, (float)g2, f);
+	b = (int)lerp((float)b1, (float)b2, f);
+	return (create_trgb(t, r, g, b));
 }
 
-int darken_color(int color, float factor)
+int	darken_color(int color, float factor)
 {
+	int	t;
+	int	r;
+	int	g;
+	int	b;
+
 	if (factor < 0.0f)
 		factor = 0.0f;
 	if (factor > 1.0f)
 		factor = 1.0f;
-
-	int t = (color >> 24) & 0xFF;
-	int r = (color >> 16) & 0xFF;
-	int g = (color >> 8) & 0xFF;
-	int b = color & 0xFF;
-
+	t = (color >> 24) & 0xFF;
+	r = (color >> 16) & 0xFF;
+	g = (color >> 8) & 0xFF;
+	b = color & 0xFF;
 	r = (int)(r * factor);
 	g = (int)(g * factor);
 	b = (int)(b * factor);
-
-	return create_trgb(t, r, g, b);
+	return (create_trgb(t, r, g, b));
 }
 
-void drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
+void	drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (i < size)
@@ -81,10 +93,10 @@ void drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 	}
 }
 
-void fillfloor(t_cub *cub, int color)
+void	fillfloor(t_cub *cub, int color)
 {
-	int y;
-	int x;
+	int	y;
+	int	x;
 
 	y = cub->win_res.y / 2;
 	while (y < cub->win_res.y)
@@ -99,10 +111,10 @@ void fillfloor(t_cub *cub, int color)
 	}
 }
 
-void fillcolor(t_cub *cub, int color)
+void	fillcolor(t_cub *cub, int color)
 {
-	int y;
-	int x;
+	int	y;
+	int	x;
 
 	y = 0;
 	while (y < cub->win_res.y)
@@ -117,11 +129,11 @@ void fillcolor(t_cub *cub, int color)
 	}
 }
 
-void fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
+void	fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
 {
-	int y;
-	int x;
-	int color;
+	int	y;
+	int	x;
+	int	color;
 
 	y = 0;
 	while (y < xywh[3])
@@ -137,25 +149,30 @@ void fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
 	}
 }
 
-void renderwall(t_cub *cub, int screencol, t_rayresult *ray)
+void	renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 {
-	float sizeper;
-	int ysize;
-	int y;
-	int yend;
-	t_img *texture;
-	float worldcol;
-	float colper;
-	int texturecol;
-	float dist;
-	int wallheight;
-	int i;
-	float brightness = 0;
+	float	sizeper;
+	int		ysize;
+	int		y;
+	int		yend;
+	t_img	*texture;
+	float	worldcol;
+	float	colper;
+	int		texturecol;
+	float	dist;
+	int		wallheight;
+	int		i;
+	float	brightness;
+	int		lastty;
+	int		color;
+	int		ty;
 
-	dist = cos(toradian(ray->rayangle - cub->pyaw)) * distance(cub->ploc, ray->hit);
+	brightness = 0;
+	dist = cos(toradian(ray->rayangle - cub->pyaw)) * distance(cub->ploc,
+			ray->hit);
 	sizeper = 1 / dist + 0.0001f;
 	if (sizeper <= 0)
-		return;
+		return ;
 	ysize = cub->win_res.y * sizeper;
 	y = cub->win_res.y / 2 - ysize / 2;
 	yend = cub->win_res.y / 2 + ysize / 2;
@@ -186,13 +203,11 @@ void renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 	colper = worldcol - ((int)worldcol);
 	texturecol = texture->width * colper;
 	wallheight = yend - y;
-
-	int lastty = -1;
-	int color;
+	lastty = -1;
 	i = 0;
 	while (i < wallheight)
 	{
-		int ty = (i / (float)wallheight) * texture->height;
+		ty = (i / (float)wallheight) * texture->height;
 		if (lastty != ty)
 		{
 			color = getpixel(texture, texturecol, ty);
@@ -207,23 +222,26 @@ void renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 /**
  * Raycast for walls and return the hit position if wall found or NULL
  */
-t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
+t_rayresult	*raycastwall(t_cub *cub, t_vec2f raydir)
 {
-	int mapX = (int)cub->ploc.x;
-	int mapY = (int)cub->ploc.y;
+	int			mapX;
+	int			mapY;
+	float		deltaDistX;
+	float		deltaDistY;
+	int			stepX;
+	int			stepY;
+	float		sideDistX;
+	float		sideDistY;
+	bool		hit;
+	int			side;
+	int			i;
+	float		distance;
+	t_rayresult	*result;
 
-	float deltaDistX = fabs(1.0f / raydir.x);
-	float deltaDistY = fabs(1.0f / raydir.y);
-
-	int stepX;
-	int stepY;
-	float sideDistX;
-	float sideDistY;
-
-	bool hit;
-	int side;
-	int i;
-
+	mapX = (int)cub->ploc.x;
+	mapY = (int)cub->ploc.y;
+	deltaDistX = fabs(1.0f / raydir.x);
+	deltaDistY = fabs(1.0f / raydir.y);
 	i = 0;
 	hit = false;
 	if (raydir.x < 0)
@@ -236,7 +254,6 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 		stepX = 1;
 		sideDistX = (mapX + 1.0f - cub->ploc.x) * deltaDistX;
 	}
-
 	if (raydir.y < 0)
 	{
 		stepY = -1;
@@ -247,7 +264,6 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 		stepY = 1;
 		sideDistY = (mapY + 1.0f - cub->ploc.y) * deltaDistY;
 	}
-
 	while (!hit)
 	{
 		if (sideDistX < sideDistY)
@@ -266,17 +282,15 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 			return (NULL);
 		i++;
 		if (mapX < 0 || mapX >= cub->mwidth || mapY < 0 || mapY >= cub->mheight)
-			continue;
+			continue ;
 		if (cub->map[mapY][mapX] == WALL)
 			hit = true;
 	}
-	float distance;
 	if (side == 0)
 		distance = (mapX - cub->ploc.x + (1 - stepX) / 2.0f) / raydir.x;
 	else
 		distance = (mapY - cub->ploc.y + (1 - stepY) / 2.0f) / raydir.y;
-
-	t_rayresult *result = malloc(sizeof(t_rayresult));
+	result = malloc(sizeof(t_rayresult));
 	if (!result)
 		return (NULL);
 	result->hit.x = cub->ploc.x + raydir.x * distance;
@@ -298,12 +312,12 @@ t_rayresult *raycastwall(t_cub *cub, t_vec2f raydir)
 	return (result);
 }
 
-void printmap(t_cub *cub)
+void	printmap(t_cub *cub)
 {
-	int y;
-	int x;
-	t_vec2 coord;
-	t_vec2f dir;
+	int		y;
+	int		x;
+	t_vec2	coord;
+	t_vec2f	dir;
 
 	y = 0;
 	while (y < cub->mheight)
@@ -321,24 +335,28 @@ void printmap(t_cub *cub)
 		}
 		y++;
 	}
-	drawsqare(cub, (t_vec2){cub->ploc.x * 20, cub->ploc.y * 20}, 10,
-			  0x00FF00FF);
+	drawsqare(cub, (t_vec2){cub->ploc.x * 20 - 5, cub->ploc.y * 20 - 5}, 10,
+		0x00FF00FF);
 	dir = yawtovec(cub->pyaw);
-	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10 + 10, cub->ploc.y * 20 + dir.y * 10 + 10}, 5, 0x00FF00FF);
+	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10 - 2.5, cub->ploc.y * 20
+		+ dir.y * 10 - 2.5}, 5, 0x00FF00FF);
 }
 
 /**
  * Render the frame on the buffer img
  */
-void renderframe(t_cub *cub)
+void	renderframe(t_cub *cub)
 {
-	int x;
-	float rayangle;
-	t_vec2f raydir;
-	t_rayresult *ray;
+	int			x;
+	float		rayangle;
+	t_vec2f		raydir;
+	t_rayresult	*ray;
 
-	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80, 176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
-	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224, 48), (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y / 2});
+	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80,
+			176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
+	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224,
+			48), (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y
+		/ 2});
 	x = 0;
 	while (x < cub->win_res.x)
 	{

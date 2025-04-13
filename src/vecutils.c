@@ -6,21 +6,11 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:14 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/12 22:56:48 by max              ###   ########.fr       */
+/*   Updated: 2025/04/13 14:36:45 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
-
-float	toradian(float degrees)
-{
-	return (degrees * (M_PI / 180.0));
-}
-
-float	todegrees(float rad)
-{
-	return (rad * (180.0 / M_PI));
-}
 
 float	normyaw(float yaw)
 {
