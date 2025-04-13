@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/13 14:05:08 by max              ###   ########.fr       */
+/*   Updated: 2025/04/13 14:16:19 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,7 +324,7 @@ void printmap(t_cub *cub)
 	drawsqare(cub, (t_vec2){cub->ploc.x * 20, cub->ploc.y * 20}, 10,
 			  0x00FF00FF);
 	dir = yawtovec(cub->pyaw);
-	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10, cub->ploc.y * 20 + dir.y * 10}, 5, 0x00FF00FF);
+	drawsqare(cub, (t_vec2){cub->ploc.x * 20 + dir.x * 10 + 10, cub->ploc.y * 20 + dir.y * 10 + 10}, 5, 0x00FF00FF);
 }
 
 /**

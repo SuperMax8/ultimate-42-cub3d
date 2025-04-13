@@ -92,7 +92,8 @@ int count_line(t_map *map);
 int ft_strlen(char *str);
 int count_line(t_map *map);
 
-void initgraph(t_cub *sl);
+void initgraph(t_cub *cub);
+void closewindow(t_cub *cub);
 void renderframe(t_cub *cub);
 
 t_vec2f yawtovec(float yaw);

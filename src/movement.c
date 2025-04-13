@@ -6,7 +6,7 @@
 /*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:05:00 by max               #+#    #+#             */
-/*   Updated: 2025/04/13 14:05:20 by max              ###   ########.fr       */
+/*   Updated: 2025/04/13 14:19:15 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,15 @@ static void keyhandle(t_cub *cub, int keycode, bool value)
 		*ptr = val;
 	else if (*ptr == val)
 		*ptr = 0;
-	// printf("keycode: %d\n", keycode);
+	//printf("keycode: %d\n", keycode);
 }
 
 static int handle_keypress(int keycode, t_cub *cub)
 {
 	if (keycode == 65307)
 	{
-		// close_window(sl, 0);
-		printf("End !\n");
-		exit(0);
+		printf("Esc exit!\n");
+		closewindow(cub);
 	}
 	else
 		keyhandle(cub, keycode, true);
