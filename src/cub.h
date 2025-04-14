@@ -90,6 +90,7 @@ typedef struct s_map
 	char	*textureeast;
 	char	*texturewest;
 	char	*ptrtexture;
+	int		color;
 	int		x;
 	int		y;
 	int		fd;

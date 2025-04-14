@@ -4,6 +4,7 @@
         "chrono": "c",
         "random": "c",
         "limits": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "sstream": "c"
     }
 }
