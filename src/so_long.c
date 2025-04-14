@@ -42,33 +42,36 @@ int	main(int count, char **args)
 	static t_cub		cub;
 	if (count != 2)
 	{
-		printf("not the right number of args");
+		printf("not the right number of args\n");
 		return (0);
 	}
 	if (checkcub(args[1]))
 	{
-		printf("its not a *.cub file");
+		printf("its not a *.cub file\n");
 		return (0);
 	}
 	map.fd = open(args[1], O_RDONLY);
 	if (map.fd < 0)
+	{
+		printf("file doesnt exist\n");
 		return (0);
+	}
 	map.count = count_line(&map);
+	close(map.fd);
+	map.fd = open(args[1], O_RDONLY);
 	parsing(&map);
+	close(map.fd);
 	int d = 0;
 	while (map.file[d])
 	{
-		printf("%s", map.file[d]);
+		printf("%s\n", map.file[d]);
 		d++;
 	}
-	close(map.fd);
-	printf("error");
 	if (!ismapvalid(&map, &cub))
 	{
 		free_file(&map);
 		return (0);
 	}
 	//mini(map);
-	printf("Error\n");
 	return (1);
 }

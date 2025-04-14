@@ -14,13 +14,54 @@
 /* ************************************************************************** */
 
 #include "cub.h"
-#include "ft_printf.h"
 
+void	resizemap(t_map *map, t_cub *cub)
+{
+	int i;
+	int d;
+
+	d = 0;
+	i = 0;
+	while(map->map[d])
+	{
+		i = 0;
+		while(map->map[d][i])
+		{
+			if (map->map[d][i] != 32 || map->map[d][i] != '\n')
+			{
+				map->map = map->map + d;
+				return ;
+			}
+			i++;
+		}
+		d++;
+	}
+	return ; 
+}
+
+char *ft_strdups(char *str)
+{
+	int i;
+	char *newstr;
+
+	i = 0;
+	newstr = malloc((sizeof(char) * ft_strlen(str)) + 1);
+	if (!newstr)
+		return (NULL);
+	while(str[i])
+	{
+		newstr[i] = str[i];
+		i++;
+	}
+	newstr[i] = '\0';
+	return (newstr);
+}
 
 int ft_strlen(char *str)
 {
 	int i;
 
+	i = 0;
 	while (str[i])
 		i++;
 	return (i);
@@ -49,47 +90,52 @@ int checkwall(t_map *map, t_cub *cub, int d, int i)
 }
 int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 {
-	if (map->map[d][i] == 'N')
+	if (map->map[d][i] == NORTH)
 	{
 		map->x = i;
 		map->y = d;
 	}
-	else if (map->map[d][i] == 'S')
+	else if (map->map[d][i] == SOUTH)
 	{
 		map->x = i;
 		map->y = d;
 	}
-	else if (map->map[d][i] == 'E')
+	else if (map->map[d][i] == EAST)
 	{
 		map->x = i;
 		map->y = d;
 	}
-	else if (map->map[d][i] == 'W')
+	else if (map->map[d][i] == WEST)
 	{
 		map->x = i;
 		map->y = d;
 	}
 	else 
 		return (0);
-	map->x = i;
-	map->y = d;
-	return (i);
+	return (1);
 }
 
 int	checkmap(t_map *map, t_cub *cub)
 {
 	int i;
 	int d;
+	int checkplayer;
 
 	i = 0;
 	d = 0;
+	checkplayer = 0;
+	resizemap(map, cub);
 	while (map->map[d])
 	{
 		i = 0;
+		printf("%s\n", map->map[d]);
 		while (map->map[d][i])
 		{
 			if (map->map[d][i] == 32 || map->map[d][i] == WALL)
+			{
+				i++;
 				continue;
+			}
 			else if (map->map[d][i] == VOID)
 			{
 				if (checkwall(map, cub, d, i) == 0)
@@ -97,8 +143,13 @@ int	checkmap(t_map *map, t_cub *cub)
 			}
 			else if (map->map[d][i] >= 65 && map->map[d][i] <= 90)
 			{
-				if (checkplayerdirection(map , cub, i, d) == 0)
+				if (checkplayer)
 					return (0);
+				if (checkwall(map, cub, d, i) == 0)
+					return (0);
+				if (checkplayerdirection(map , cub, d, i) == 0)
+					return (0);
+				checkplayer = 1;
 			}
 			else 
 				return (0);
@@ -106,6 +157,8 @@ int	checkmap(t_map *map, t_cub *cub)
 		}
 		d++;
 	}
+	if (!checkplayer)
+		return (0);
 	return (1);
 }
 
@@ -118,7 +171,10 @@ int	copy(t_map *map, t_cub *cub, int i, int d)
 		i++;
 	if (!map->file[d][i])
 		return (0);
-	while (map->file[d][i] && map->file[d][i] != 32)
+	map->ptrtexture = malloc(sizeof(char) * ft_strlen(map->file[d] + i) + 1);
+	if (!map->ptrtexture)
+		return (0);
+	while (map->file[d][i] && map->file[d][i] != 32 && map->file[d][i] != '\n')
 	{
 		map->ptrtexture[e] = map->file[d][i];
 		i++;
@@ -132,41 +188,46 @@ int	getinfo(t_map *map, t_cub *cub, int i, int d)
 	if (map->file[d][i] == 'N' && map->file[d][i + 1] == 'O')
 	{
 		i += 2;
-		map->ptrtexture = map->texturenorth;
 		if (map->texturenorth)
 			return (0);
 		if (!copy(map, cub, i, d))
 			return (0);
+		map->texturenorth = ft_strdups(map->ptrtexture);
+		printf("%s\n", map->texturenorth);
+		free(map->ptrtexture);
 		return (1);
 	}
 	else if (map->file[d][i] == 'S' && map->file[d][i + 1] == 'O')
 	{
 		i += 2;
-		map->ptrtexture = map->texturesouth;
 		if (map->texturesouth)
 			return (0);
 		if (!copy(map, cub, i, d))
 			return (0);
+		map->texturesouth = ft_strdups(map->ptrtexture);
+		free(map->ptrtexture);
 		return (1);
 	}
 	else if (map->file[d][i] == 'W' && map->file[d][i + 1] == 'E')
 	{
 		i += 2;
-		map->ptrtexture = map->texturewest;
 		if (map->texturewest)
 			return (0);
 		if (!copy(map, cub, i, d))
 			return (0);
+		map->texturewest = ft_strdups(map->ptrtexture);
+		free(map->ptrtexture);
 		return (1);
 	}
 	else if (map->file[d][i] == 'E' && map->file[d][i + 1] == 'A')
 	{
 		i += 2;
-		map->ptrtexture = map->textureeast;
 		if (map->textureeast)
 			return (0);
 		if (!copy(map, cub, i, d))
 			return (0);
+		map->textureeast = ft_strdups(map->ptrtexture);
+		free(map->ptrtexture);
 		return (1);
 	}
 	else if (map->file[d][i] == 'F')
@@ -187,7 +248,7 @@ int	getinfo(t_map *map, t_cub *cub, int i, int d)
 int	checkallfileinfo(t_cub *cub, t_map *map)
 {
 	if (map->texturenorth && map->texturesouth && map->textureeast
-		&& map->texturewest && cub->color_ceiling && cub->color_floor)
+		&& map->texturewest)
 		return (1);
 	return (0);
 }
@@ -204,6 +265,7 @@ int	checkfile(t_map *map, t_cub *cub)
 		i = 0;
 		while (map->file[d][i] != '\n')
 		{
+			printf("%s", map->file[d]);
 			if (map->file[d][i] >= 65 && map->file[d][i] <= 90)
 			{
 				if (getinfo(map, cub, i, d))
@@ -227,20 +289,20 @@ int	checkfile(t_map *map, t_cub *cub)
 
 int	ismapvalid(t_map *map, t_cub *cub)
 {
-	if (map->count > 150 || ft_strlen(map->map[0]) > 300)
+	if (map->count > 150)
 	{
-		ft_printf("Error\n");
-		ft_printf("Map is too big !\n");
+		printf("Error\n");
+		printf("Map is too big !\n");
 		return (0);
 	}
 	if (!checkfile(map, cub))
 	{
-		ft_printf("Error\n");
+		printf("Error\n");
 		return (0);
 	}
 	if (!checkmap(map, cub))
 	{
-		ft_printf("Error\n");
+		printf("Errore\n");
 		return (0);
 	}
 	return (1);

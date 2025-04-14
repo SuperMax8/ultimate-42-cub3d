@@ -48,6 +48,7 @@ int	count_line(t_map *map)
 {
 	char	*line;
 	int		count;
+	char d;
 
 	count = 0;
 	line = get_next_line(map->fd);
@@ -57,7 +58,7 @@ int	count_line(t_map *map)
 		free(line);
 		line = get_next_line(map->fd);
 	}
-	ft_printf("%d", count);
+	printf("%d", count);
 	return (count);
 }
 
@@ -72,9 +73,6 @@ void	parsing(t_map *map)
 	while (i < map->count)
 	{
 		map->file[i] = get_next_line(map->fd);
-		if (ft_strlen(map->file[i]) > 0
-			&& map->file[i][ft_strlen(map->file[i]) - 2] == '\r')
-			map->file[i][ft_strlen(map->file[i]) - 2] = '\0';
 		if (map->file[i][ft_strlen(map->file[i]) - 1] == '\n')
 			map->file[i][ft_strlen(map->file[i]) - 1] = '\0';
 		i++;
