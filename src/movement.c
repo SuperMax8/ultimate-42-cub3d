@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:05:00 by max               #+#    #+#             */
-/*   Updated: 2025/04/13 14:19:15 by max              ###   ########.fr       */
+/*   Updated: 2025/05/01 16:26:29 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ static void keyhandle(t_cub *cub, int keycode, bool value)
 	{
 		ptr = &cub->rotation;
 		val = -1;
-	}
+	} else
+		return ;
 	if (value)
 		*ptr = val;
 	else if (*ptr == val)
