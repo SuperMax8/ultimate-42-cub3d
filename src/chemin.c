@@ -103,11 +103,6 @@ int ft_doublestrlen(char **str)
 	return (d);
 }
 
-int checkwall(t_map *map, t_cub *cub, int d, int i)
-{
-	return (1);
-}
-
 int checkvoid(t_map *map, t_cub *cub, int d, int i)
 {
 	if (i == 0 || i == ft_strlen(map->map[d]) - 1)
@@ -120,6 +115,7 @@ int checkvoid(t_map *map, t_cub *cub, int d, int i)
 		return (0);
 	return (1);
 }
+
 int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 {
 	if (map->map[d][i] == NORTH)
@@ -147,6 +143,31 @@ int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 	return (1);
 }
 
+/*int	mapcopy(t_map *map)
+{
+	int d;
+	int i;
+
+	d = 0;
+	i = 0;
+	map->copymap = malloc(sizeof(char *) * ft_doublestrlen(map->map) + 1);
+	if (!map->copymap)
+		return (0);
+	while (map->map[d])
+	{
+		map->copymap[d] = ft_strdups(map->map[d]);
+		if (!map->copymap)
+			return (0);
+		d++;
+	}
+	return (1);
+}*/
+
+int floodfill(t_map *map)
+{
+	return (1);
+}
+
 int	checkmap(t_map *map, t_cub *cub)
 {
 	int i;
@@ -170,8 +191,8 @@ int	checkmap(t_map *map, t_cub *cub)
 			}
 			if(map->map[d][i] == WALL)
 			{
-				if (!checkwall(map, cub, d, i))
-					return (0);
+				i++;
+				continue;
 			}
 			else if (map->map[d][i] == VOID)
 			{
@@ -196,6 +217,10 @@ int	checkmap(t_map *map, t_cub *cub)
 	}
 	if (!checkplayer)
 		return (0);
+	//if (!copymap(map))
+	//	return (0);
+	if (!floodfill)
+		return (0);
 	return (1);
 }
 
@@ -218,6 +243,13 @@ int	copy(t_map *map, t_cub *cub, int i, int d)
 		e++;
 	}
 	map->ptrtexture[e] = '\0';
+	while (map->file[d][i] == 32)
+		i++;
+	if (map->file[d][i] != '\0' && map->file[d][i] != '\n')
+	{
+		free(map->ptrtexture);
+		return (0);
+	}
 	return (1);
 }
 
@@ -316,6 +348,7 @@ int	getinfo(t_map *map, t_cub *cub, int i, int d)
 		if (!stockagecolor(map, cub, i, d))
 			return (0);
 		cub->color_floor = map->color;
+		printf("%d\n", cub->color_floor);
 	}
 	else if (map->file[d][i] == 'C')
 	{
@@ -375,7 +408,7 @@ int	checkfile(t_map *map, t_cub *cub)
 
 int	ismapvalid(t_map *map, t_cub *cub)
 {
-	if (map->count > 150)
+	if (map->count > 200)
 	{
 		printf("Error\n");
 		printf("Map is too big !\n");

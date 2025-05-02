@@ -124,5 +124,6 @@ t_img		*newimg(t_cub *cub, int width, int height);
 void		destroyimg(t_cub *cub, t_img *img);
 int			getpixel(t_img *img, int x, int y);
 void		drawpixel(t_img *img, int x, int y, int color);
+char	*ft_strdup(const char *src);
 
 #endif
