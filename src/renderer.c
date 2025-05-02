@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/13 14:42:32 by max              ###   ########.fr       */
+/*   Updated: 2025/05/02 17:54:38 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ int	darken_color(int color, float factor)
 
 void	drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 {
-	int	i;
-	int	j;
+	register int	i;
+	register int	j;
 
 	i = 0;
 	while (i < size)
@@ -95,8 +95,8 @@ void	drawsqare(t_cub *cub, t_vec2 coord, int size, int color)
 
 void	fillfloor(t_cub *cub, int color)
 {
-	int	y;
-	int	x;
+	register int	y;
+	register int	x;
 
 	y = cub->win_res.y / 2;
 	while (y < cub->win_res.y)
@@ -113,8 +113,8 @@ void	fillfloor(t_cub *cub, int color)
 
 void	fillcolor(t_cub *cub, int color)
 {
-	int	y;
-	int	x;
+	register int	y;
+	register int	x;
 
 	y = 0;
 	while (y < cub->win_res.y)
@@ -131,8 +131,8 @@ void	fillcolor(t_cub *cub, int color)
 
 void	fillvgradient(t_cub *cub, int color1, int color2, int *xywh)
 {
-	int	y;
-	int	x;
+	register int	y;
+	register int	x;
 	int	color;
 
 	y = 0;
@@ -161,7 +161,7 @@ void	renderwall(t_cub *cub, int screencol, t_rayresult *ray)
 	int		texturecol;
 	float	dist;
 	int		wallheight;
-	int		i;
+	register int		i;
 	float	brightness;
 	int		lastty;
 	int		color;
@@ -347,10 +347,10 @@ void	printmap(t_cub *cub)
  */
 void	renderframe(t_cub *cub)
 {
-	int			x;
-	float		rayangle;
-	t_vec2f		raydir;
-	t_rayresult	*ray;
+	register int			x;
+	register float		rayangle;
+	register t_vec2f		raydir;
+	register t_rayresult	*ray;
 
 	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80,
 			176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});

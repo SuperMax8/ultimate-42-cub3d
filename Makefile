@@ -6,7 +6,7 @@ INCLUDES	=	-I/usr/include -Imlx
 
 RM			=	rm -rf
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-O3 -march=native #-Wall -Wextra -Werror
 
 SRCS		=	src/main.c src/renderer.c src/vecutils.c src/graph.c src/imgutils.c src/movement.c src/mathutils.c
 
