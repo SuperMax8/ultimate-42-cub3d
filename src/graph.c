@@ -3,14 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   graph.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:21 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/13 14:27:17 by max              ###   ########.fr       */
+/*   Updated: 2025/05/04 16:23:55 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
+
+void freemap(t_map *map)
+{
+	int i;
+
+	i = 0;
+	while (map->file[i])
+	{
+		free(map->file[i]);
+		i++;
+	}
+	free(map->file);
+	free(map->textureeast);
+	free(map->texturenorth);
+	free(map->texturewest);
+	free(map->texturesouth);
+}
 
 void closewindow(t_cub *cub)
 {
@@ -26,7 +43,7 @@ void closewindow(t_cub *cub)
 		mlx_destroy_display(cub->mlx_ptr);
 		free(cub->mlx_ptr);
 	}
-	free(cub->map);
+	freemap(cub->mapmap);
 	printf("Clean exit!\n");
 	exit(0);
 }
@@ -47,10 +64,10 @@ void initgraph(t_cub *cub)
 		closewindow(cub);
 	cub->window = mlx_new_window(cub->mlx_ptr, cub->win_res.x, cub->win_res.y,
 								 "Klum3D");
-	cub->img_n = loadimg(cub, "textures/blackstone.xpm");
-	cub->img_s = loadimg(cub, "textures/crimson_nylium.xpm");
-	cub->img_w = loadimg(cub, "textures/resin_bricks.xpm");
-	cub->img_e = loadimg(cub, "textures/tnt_side.xpm");
+	cub->img_n = loadimg(cub, cub->mapmap->texturenorth);
+	cub->img_s = loadimg(cub, cub->mapmap->texturesouth);
+	cub->img_w = loadimg(cub, cub->mapmap->texturewest);
+	cub->img_e = loadimg(cub, cub->mapmap->textureeast);
 	cub->framebuff = newimg(cub, cub->win_res.x, cub->win_res.y);
 	if (!cub->window || !cub->img_n || !cub->img_s || !cub->img_w || !cub->img_e || !cub->framebuff)
 		closewindow(cub);

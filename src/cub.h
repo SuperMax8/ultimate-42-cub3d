@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:38:57 by max               #+#    #+#             */
-/*   Updated: 2025/04/13 14:39:00 by max              ###   ########.fr       */
+/*   Updated: 2025/05/04 16:24:01 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,26 @@ typedef struct s_rayresult
 	float	rayangle;
 }			t_rayresult;
 
+typedef struct s_map
+{
+	char	**file;
+	char	**map;
+	char	**mapcopy;
+	char	*texturenorth;
+	char	*texturesouth;
+	char	*textureeast;
+	char	*texturewest;
+	char	*ptrtexture;
+	int		color;
+	int		x;
+	int		y;
+	int		fd;
+	int		count;
+	int		sizemap;
+	int		isgood;
+	int		e;
+}			t_map;
+
 typedef struct cub
 {
 	int		t;
@@ -79,27 +99,8 @@ typedef struct cub
 	t_img	*img_s;
 	t_img	*img_e;
 	t_img	*img_w;
+	t_map *mapmap;
 }			t_cub;
-
-typedef struct s_map
-{
-	char	**file;
-	char	**map;
-	char	**mapcopy;
-	char	*texturenorth;
-	char	*texturesouth;
-	char	*textureeast;
-	char	*texturewest;
-	char	*ptrtexture;
-	int		color;
-	int		x;
-	int		y;
-	int		fd;
-	int		count;
-	int		sizemap;
-	int		isgood;
-	int		e;
-}			t_map;
 
 int			ismapvalid(t_map *map, t_cub *cub);
 void		parsing(t_map *map);
@@ -129,5 +130,6 @@ void		destroyimg(t_cub *cub, t_img *img);
 int			getpixel(t_img *img, int x, int y);
 void		drawpixel(t_img *img, int x, int y, int color);
 char	*ft_strdup(const char *src);
+void freemap(t_map *map);
 
 #endif

@@ -15,11 +15,12 @@
 
 #include "cub.h"
 
+
 int	ft_atoi(const char *str)
 {
-	int	i;
-	int	result;
-	int	count_negative;
+	int i;
+	int result;
+	int count_negative;
 	i = 0;
 	result = 0;
 	count_negative = 0;
@@ -49,10 +50,10 @@ void	resizemap(t_map *map, t_cub *cub)
 
 	d = 0;
 	i = 0;
-	while(map->map[d])
+	while (map->map[d])
 	{
 		i = 0;
-		while(map->map[d][i])
+		while (map->map[d][i])
 		{
 			if (map->map[d][i] != 32 || map->map[d][i] != '\n')
 			{
@@ -63,10 +64,10 @@ void	resizemap(t_map *map, t_cub *cub)
 		}
 		d++;
 	}
-	return ; 
+	return ;
 }
 
-char *ft_strdups(char *str)
+char	*ft_strdups(char *str)
 {
 	int i;
 	char *newstr;
@@ -75,7 +76,7 @@ char *ft_strdups(char *str)
 	newstr = malloc((sizeof(char) * ft_strlen(str)) + 1);
 	if (!newstr)
 		return (NULL);
-	while(str[i])
+	while (str[i])
 	{
 		newstr[i] = str[i];
 		i++;
@@ -85,7 +86,7 @@ char *ft_strdups(char *str)
 	return (newstr);
 }
 
-int ft_strlen(char *str)
+int	ft_strlen(char *str)
 {
 	int i;
 
@@ -94,7 +95,8 @@ int ft_strlen(char *str)
 		i++;
 	return (i);
 }
-int ft_doublestrlen(char **str)
+
+int	ft_doublestrlen(char **str)
 {
 	int d;
 
@@ -104,15 +106,17 @@ int ft_doublestrlen(char **str)
 	return (d);
 }
 
-int checkvoid(t_map *map, t_cub *cub, int d, int i)
+int	checkvoid(t_map *map, t_cub *cub, int d, int i)
 {
 	if (i == 0 || i == ft_strlen(map->map[d]) - 1)
 		return (0);
 	if (d == 0 || d == ft_doublestrlen(map->map) - 1)
 		return (0);
-	if (map->map[d][i - 1] == 32 || map->map[d][i - 1] == '\0' || map->map[d][i + 1] == 32 || map->map[d][i + 1] == '\0' )
+	if (map->map[d][i - 1] == 32 || map->map[d][i - 1] == '\0' || map->map[d][i
+		+ 1] == 32 || map->map[d][i + 1] == '\0')
 		return (0);
-	if (map->map[d + 1][i] == 32 || map->map[d + 1][i] == '\0'  || map->map[d - 1][i] == 32 || map->map[d - 1][i] == '\0' )
+	if (map->map[d + 1][i] == 32 || map->map[d + 1][i] == '\0' || map->map[d
+		- 1][i] == 32 || map->map[d - 1][i] == '\0')
 		return (0);
 	return (1);
 }
@@ -120,28 +124,17 @@ int checkvoid(t_map *map, t_cub *cub, int d, int i)
 int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 {
 	if (map->map[d][i] == NORTH)
-	{
-		map->x = i;
-		map->y = d;
-	}
+		cub->pyaw = 0;
 	else if (map->map[d][i] == SOUTH)
-	{
-		map->x = i;
-		map->y = d;
-	}
+		cub->pyaw = 180;
 	else if (map->map[d][i] == EAST)
-	{
-		map->x = i;
-		map->y = d;
-	}
+		cub->pyaw = 90;
 	else if (map->map[d][i] == WEST)
-	{
-		map->x = i;
-		map->y = d;
-	}
+		cub->pyaw = 270;
 	else
 		return (0);
-	printf("%d %d\n", i, d);
+	map->x = i;
+	map->y = d;
 	return (1);
 }
 
@@ -151,7 +144,7 @@ int	mapcopy(t_map *map)
 	int i;
 
 	d = 0;
-	i = 0;	
+	i = 0;
 	map->sizemap = ft_doublestrlen(map->map);
 	map->mapcopy = malloc(sizeof(char *) * map->sizemap + 1);
 	if (!map->mapcopy)
@@ -187,7 +180,7 @@ void	checkifvisited(t_map *map)
 	}
 }
 
-int floodfill(t_map *map, int i, int d)
+int	floodfill(t_map *map, int i, int d)
 {
 	if (!map->e)
 		map->mapcopy[d][i] = '0';
@@ -227,7 +220,6 @@ int floodfill(t_map *map, int i, int d)
 	}
 	if (floodfill(map, i - 1, d))
 	{
-
 		map->mapcopy[d][i] = 'U';
 		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
 		return (1);
@@ -238,7 +230,7 @@ int floodfill(t_map *map, int i, int d)
 		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
 		return (1);
 	}
-	if	(floodfill(map, i, d - 1))
+	if (floodfill(map, i, d - 1))
 	{
 		map->mapcopy[d][i] = 'U';
 		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
@@ -247,6 +239,19 @@ int floodfill(t_map *map, int i, int d)
 	if (map->isgood)
 		return (1);
 	return (0);
+}
+
+void	freemapcopy(t_map *map)
+{
+	int i;
+
+	i = 0;
+	while (map->mapcopy[i])
+	{
+		free(map->mapcopy[i]);
+		i++;
+	}
+	free(map->mapcopy);
 }
 
 int	checkmap(t_map *map, t_cub *cub)
@@ -268,12 +273,12 @@ int	checkmap(t_map *map, t_cub *cub)
 			if (map->map[d][i] == 32)
 			{
 				i++;
-				continue;
+				continue ;
 			}
-			if(map->map[d][i] == WALL)
+			if (map->map[d][i] == WALL)
 			{
 				i++;
-				continue;
+				continue ;
 			}
 			else if (map->map[d][i] == VOID)
 			{
@@ -286,11 +291,11 @@ int	checkmap(t_map *map, t_cub *cub)
 					return (0);
 				if (checkvoid(map, cub, d, i) == 0)
 					return (0);
-				if (checkplayerdirection(map , cub, d, i) == 0)
+				if (checkplayerdirection(map, cub, d, i) == 0)
 					return (0);
 				checkplayer = 1;
 			}
-			else 
+			else
 				return (0);
 			i++;
 		}
@@ -304,26 +309,27 @@ int	checkmap(t_map *map, t_cub *cub)
 		return (0);
 	while (map->mapcopy[d])
 	{
-		write (1, "e", 1);
 		i = 0;
 		while (map->map[d][i])
 		{
 			checkifvisited(map);
-			write (1, "z", 1);
 			map->isgood = 0;
 			map->e = 0;
 			if (map->mapcopy[d][i] == 32)
 			{
 				i++;
-				continue;
+				continue ;
 			}
 			else if (!floodfill(map, i, d))
+			{
+				freemapcopy(map);
 				return (0);
+			}
 			i++;
 		}
 		d++;
-		printf("%s", map->mapcopy[d]);
 	}
+	freemapcopy(map);
 	return (1);
 }
 
@@ -356,7 +362,7 @@ int	copy(t_map *map, t_cub *cub, int i, int d)
 	return (1);
 }
 
-int stockagecolor(t_map *map, t_cub *cub, int i, int d)
+int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
 {
 	int *rgb;
 	int count;
@@ -364,11 +370,12 @@ int stockagecolor(t_map *map, t_cub *cub, int i, int d)
 	count = 0;
 	rgb = malloc(sizeof(int) * 3);
 	if (!rgb)
-		return(0);
-	while(map->file[d][i] && count < 3)
+		return (0);
+	while (map->file[d][i] && count < 3)
 	{
 		rgb[count] = ft_atoi(map->file[d] + i);
-		while (map->file[d][i] == 32 || map->file[d][i] == '\t' || map->file[d][i] == '\n' || map->file[d][i] == '\v'
+		while (map->file[d][i] == 32 || map->file[d][i] == '\t'
+			|| map->file[d][i] == '\n' || map->file[d][i] == '\v'
 			|| map->file[d][i] == '\f' || map->file[d][i] == '\r')
 			i++;
 		if (map->file[d][i] == '-' || map->file[d][i] == '+')
@@ -378,7 +385,7 @@ int stockagecolor(t_map *map, t_cub *cub, int i, int d)
 		if (map->file[d][i] == ',')
 			i++;
 		else
-			break;
+			break ;
 		count++;
 	}
 	if (count != 2)
@@ -386,7 +393,8 @@ int stockagecolor(t_map *map, t_cub *cub, int i, int d)
 		free(rgb);
 		return (0);
 	}
-	if (rgb[0] > 255 || rgb[1] > 255 || rgb[2] > 255 || rgb[0] < 0 || rgb[1] < 0 || rgb[2] < 0)
+	if (rgb[0] > 255 || rgb[1] > 255 || rgb[2] > 255 || rgb[0] < 0 || rgb[1] < 0
+		|| rgb[2] < 0)
 	{
 		free(rgb);
 		return (0);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.c                                          :+:      :+:    :+:   */
+/*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:28:01 by dtheron           #+#    #+#             */
-/*   Updated: 2025/04/12 03:57:54 by max              ###   ########.fr       */
+/*   Updated: 2025/05/04 16:22:23 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@ void	free_file(t_map *map)
 	while (i < map->count)
 		free(map->file[i++]);
 	free(map->file);
+	free(map->textureeast);
+	free(map->texturenorth);
+	free(map->texturewest);
+	free(map->texturesouth);
 }
 
 int	checkcub(char *str)
@@ -36,10 +40,31 @@ int	checkcub(char *str)
 	return(0);
 }
 
+int triplelen(char **str)
+{
+	int biggest;
+	int i;
+
+	biggest = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (ft_strlen(str[i]) > biggest)
+		{
+			biggest = ft_strlen(str[i]);
+		}
+		i++;
+	}
+	return (biggest);
+}
+
 int	main(int count, char **args)
 {
 	static t_map		map;
 	static t_cub		cub;
+
+	cub.win_res.x = 16 * 100;
+	cub.win_res.y = 9 * 100;
 	if (count != 2)
 	{
 		printf("not the right number of args\n");
@@ -61,17 +86,29 @@ int	main(int count, char **args)
 	map.fd = open(args[1], O_RDONLY);
 	parsing(&map);
 	close(map.fd);
-	int d = 0;
-	while (map.file[d])
-	{
-		printf("%s\n", map.file[d]);
-		d++;
-	}
+
 	if (!ismapvalid(&map, &cub))
 	{
 		free_file(&map);
 		return (0);
 	}
-	//mini(map);
+	cub.mapmap = &map;
+	cub.ploc.x = (float)map.x + 0.5f;
+	cub.ploc.y = (float)map.y + 0.5f;
+	cub.map = map.map;
+	cub.mwidth = triplelen(map.map);
+	cub.mheight = map.sizemap;
+
+	printf("\n %d   %d\n", cub.mwidth, cub.mheight);
+	int y = 0;
+	while (map.map[y])
+	{
+		printf("%sd\n", map.map[y]);
+		y++;
+	}
+	
+
+	initgraph(&cub);
 	return (1);
 }
+

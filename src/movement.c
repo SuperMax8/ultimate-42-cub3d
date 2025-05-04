@@ -6,14 +6,14 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:05:00 by max               #+#    #+#             */
-/*   Updated: 2025/05/01 16:26:29 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/04 16:41:33 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 
-#define MOVESPEED 0.02
-#define ROTSPEED 1.5
+#define MOVESPEED 0.015
+#define ROTSPEED 0.7
 
 void moverot(t_cub *cub)
 {

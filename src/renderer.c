@@ -6,7 +6,7 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/05/02 17:54:38 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/04 16:49:47 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,10 +352,8 @@ void	renderframe(t_cub *cub)
 	register t_vec2f		raydir;
 	register t_rayresult	*ray;
 
-	fillvgradient(cub, create_trgb(255, 52, 171, 235), create_trgb(255, 16, 80,
-			176), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
-	fillvgradient(cub, create_trgb(255, 9, 107, 41), create_trgb(255, 36, 224,
-			48), (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y
+	fillvgradient(cub, cub->color_ceiling, darken_color(cub->color_ceiling, 0.4), (int[]){0, 0, cub->win_res.x, cub->win_res.y / 2});
+	fillvgradient(cub, darken_color(cub->color_floor, 0.4), cub->color_floor, (int[]){0, cub->win_res.y / 2, cub->win_res.x, cub->win_res.y
 		/ 2});
 	x = 0;
 	while (x < cub->win_res.x)
