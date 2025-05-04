@@ -81,6 +81,7 @@ char *ft_strdups(char *str)
 		i++;
 	}
 	newstr[i] = '\0';
+	printf("size %d\n", ft_strlen(newstr));
 	return (newstr);
 }
 
@@ -109,9 +110,9 @@ int checkvoid(t_map *map, t_cub *cub, int d, int i)
 		return (0);
 	if (d == 0 || d == ft_doublestrlen(map->map) - 1)
 		return (0);
-	if (map->map[d][i - 1] == 32 || map->map[d][i + 1] == 32)
+	if (map->map[d][i - 1] == 32 || map->map[d][i - 1] == '\0' || map->map[d][i + 1] == 32 || map->map[d][i + 1] == '\0' )
 		return (0);
-	if (map->map[d + 1][i] == 32 || map->map[d - 1][i] == 32)
+	if (map->map[d + 1][i] == 32 || map->map[d + 1][i] == '\0'  || map->map[d - 1][i] == 32 || map->map[d - 1][i] == '\0' )
 		return (0);
 	return (1);
 }
@@ -138,34 +139,114 @@ int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 		map->x = i;
 		map->y = d;
 	}
-	else 
+	else
 		return (0);
+	printf("%d %d\n", i, d);
 	return (1);
 }
 
-/*int	mapcopy(t_map *map)
+int	mapcopy(t_map *map)
 {
 	int d;
 	int i;
 
 	d = 0;
-	i = 0;
-	map->copymap = malloc(sizeof(char *) * ft_doublestrlen(map->map) + 1);
-	if (!map->copymap)
+	i = 0;	
+	map->sizemap = ft_doublestrlen(map->map);
+	map->mapcopy = malloc(sizeof(char *) * map->sizemap + 1);
+	if (!map->mapcopy)
 		return (0);
 	while (map->map[d])
 	{
-		map->copymap[d] = ft_strdups(map->map[d]);
-		if (!map->copymap)
+		map->mapcopy[d] = ft_strdups(map->map[d]);
+		if (!map->mapcopy)
 			return (0);
 		d++;
 	}
+	map->mapcopy[d] = NULL;
 	return (1);
-}*/
+}
 
-int floodfill(t_map *map)
+void	checkifvisited(t_map *map)
 {
-	return (1);
+	int i;
+	int d;
+
+	i = 0;
+	d = 0;
+	while (map->mapcopy[d])
+	{
+		i = 0;
+		while (map->mapcopy[d][i])
+		{
+			if (map->mapcopy[d][i] == 'V')
+				map->mapcopy[d][i] = 'U';
+			i++;
+		}
+		d++;
+	}
+}
+
+int floodfill(t_map *map, int i, int d)
+{
+	if (!map->e)
+		map->mapcopy[d][i] = '0';
+	if (map->isgood)
+	{
+		printf("%d, %d\n", i, d);
+		if (i < 0 || d < 0 || d >= map->sizemap)
+			map->mapcopy[d][i] = 'U';
+		return (1);
+	}
+	map->e++;
+	printf("%d, %d\n", i, d);
+	if (i < 0 || d < 0 || d >= map->sizemap || i >= ft_strlen(map->mapcopy[d]))
+		return (0);
+	if (!map->mapcopy[d])
+		return (0);
+	if (map->mapcopy[d][i] == 32)
+		return (0);
+	if (map->mapcopy[d][i] == 'V')
+		return (0);
+	if (map->mapcopy[d][i] == 'U')
+	{
+		map->isgood = 1;
+		return (1);
+	}
+	if (map->x == i && map->y == d)
+	{
+		map->isgood = 1;
+		return (1);
+	}
+	map->mapcopy[d][i] = 'V';
+	if (floodfill(map, i + 1, d))
+	{
+		map->mapcopy[d][i] = 'U';
+		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
+		return (1);
+	}
+	if (floodfill(map, i - 1, d))
+	{
+
+		map->mapcopy[d][i] = 'U';
+		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
+		return (1);
+	}
+	if (floodfill(map, i, d + 1))
+	{
+		map->mapcopy[d][i] = 'U';
+		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
+		return (1);
+	}
+	if	(floodfill(map, i, d - 1))
+	{
+		map->mapcopy[d][i] = 'U';
+		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
+		return (1);
+	}
+	if (map->isgood)
+		return (1);
+	return (0);
 }
 
 int	checkmap(t_map *map, t_cub *cub)
@@ -181,7 +262,7 @@ int	checkmap(t_map *map, t_cub *cub)
 	while (map->map[d])
 	{
 		i = 0;
-		printf("%s\n", map->map[d]);
+		printf("u%s\n", map->map[d]);
 		while (map->map[d][i])
 		{
 			if (map->map[d][i] == 32)
@@ -217,10 +298,32 @@ int	checkmap(t_map *map, t_cub *cub)
 	}
 	if (!checkplayer)
 		return (0);
-	//if (!copymap(map))
-	//	return (0);
-	if (!floodfill)
+	i = 0;
+	d = 0;
+	if (!mapcopy(map))
 		return (0);
+	while (map->mapcopy[d])
+	{
+		write (1, "e", 1);
+		i = 0;
+		while (map->map[d][i])
+		{
+			checkifvisited(map);
+			write (1, "z", 1);
+			map->isgood = 0;
+			map->e = 0;
+			if (map->mapcopy[d][i] == 32)
+			{
+				i++;
+				continue;
+			}
+			else if (!floodfill(map, i, d))
+				return (0);
+			i++;
+		}
+		d++;
+		printf("%s", map->mapcopy[d]);
+	}
 	return (1);
 }
 

@@ -5,6 +5,10 @@
         "random": "c",
         "limits": "c",
         "algorithm": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "string_view": "c",
+        "string.h": "c"
     }
 }

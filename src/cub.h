@@ -85,6 +85,7 @@ typedef struct s_map
 {
 	char	**file;
 	char	**map;
+	char	**mapcopy;
 	char	*texturenorth;
 	char	*texturesouth;
 	char	*textureeast;
@@ -95,6 +96,9 @@ typedef struct s_map
 	int		y;
 	int		fd;
 	int		count;
+	int		sizemap;
+	int		isgood;
+	int		e;
 }			t_map;
 
 int			ismapvalid(t_map *map, t_cub *cub);
