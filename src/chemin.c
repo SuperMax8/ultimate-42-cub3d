@@ -135,6 +135,7 @@ int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 		return (0);
 	map->x = i;
 	map->y = d;
+	map->checkplayer = 1;
 	return (1);
 }
 
@@ -182,60 +183,24 @@ void	checkifvisited(t_map *map)
 
 int	floodfill(t_map *map, int i, int d)
 {
-	if (!map->e)
-		map->mapcopy[d][i] = '0';
 	if (map->isgood)
-	{
-		printf("%d, %d\n", i, d);
-		if (i < 0 || d < 0 || d >= map->sizemap)
-			map->mapcopy[d][i] = 'U';
 		return (1);
-	}
-	map->e++;
-	printf("%d, %d\n", i, d);
 	if (i < 0 || d < 0 || d >= map->sizemap || i >= ft_strlen(map->mapcopy[d]))
 		return (0);
 	if (!map->mapcopy[d])
 		return (0);
-	if (map->mapcopy[d][i] == 32)
+	if (map->mapcopy[d][i] == 32 || map->mapcopy[d][i] == 'V')
 		return (0);
-	if (map->mapcopy[d][i] == 'V')
-		return (0);
-	if (map->mapcopy[d][i] == 'U')
-	{
-		map->isgood = 1;
-		return (1);
-	}
-	if (map->x == i && map->y == d)
+	if (map->mapcopy[d][i] == 'U' || (map->x == i && map->y == d))
 	{
 		map->isgood = 1;
 		return (1);
 	}
 	map->mapcopy[d][i] = 'V';
-	if (floodfill(map, i + 1, d))
-	{
-		map->mapcopy[d][i] = 'U';
-		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
-		return (1);
-	}
-	if (floodfill(map, i - 1, d))
-	{
-		map->mapcopy[d][i] = 'U';
-		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
-		return (1);
-	}
-	if (floodfill(map, i, d + 1))
-	{
-		map->mapcopy[d][i] = 'U';
-		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
-		return (1);
-	}
-	if (floodfill(map, i, d - 1))
-	{
-		map->mapcopy[d][i] = 'U';
-		printf("%d, %d, %c\n", i, d, map->mapcopy[d][i]);
-		return (1);
-	}
+	floodfill(map, i + 1, d);
+	floodfill(map, i - 1, d);
+	floodfill(map, i, d + 1);
+	floodfill(map, i, d - 1);
 	if (map->isgood)
 		return (1);
 	return (0);
@@ -254,55 +219,25 @@ void	freemapcopy(t_map *map)
 	free(map->mapcopy);
 }
 
-int	checkmap(t_map *map, t_cub *cub)
+int	itstoolongsoimfindingsolution(t_map *map, int d, int i)
+{
+	checkifvisited(map);
+	map->isgood = 0;
+	if (map->mapcopy[d][i] == 32)
+		return (1);
+	else if (!floodfill(map, i, d))
+	{
+		freemapcopy(map);
+		return (0);
+	}
+	return (1);
+}
+
+int	lookforproblem(t_map *map, t_cub *cub)
 {
 	int i;
 	int d;
-	int checkplayer;
 
-	i = 0;
-	d = 0;
-	checkplayer = 0;
-	resizemap(map, cub);
-	while (map->map[d])
-	{
-		i = 0;
-		printf("u%s\n", map->map[d]);
-		while (map->map[d][i])
-		{
-			if (map->map[d][i] == 32)
-			{
-				i++;
-				continue ;
-			}
-			if (map->map[d][i] == WALL)
-			{
-				i++;
-				continue ;
-			}
-			else if (map->map[d][i] == VOID)
-			{
-				if (checkvoid(map, cub, d, i) == 0)
-					return (0);
-			}
-			else if (map->map[d][i] >= 65 && map->map[d][i] <= 90)
-			{
-				if (checkplayer)
-					return (0);
-				if (checkvoid(map, cub, d, i) == 0)
-					return (0);
-				if (checkplayerdirection(map, cub, d, i) == 0)
-					return (0);
-				checkplayer = 1;
-			}
-			else
-				return (0);
-			i++;
-		}
-		d++;
-	}
-	if (!checkplayer)
-		return (0);
 	i = 0;
 	d = 0;
 	if (!mapcopy(map))
@@ -312,24 +247,62 @@ int	checkmap(t_map *map, t_cub *cub)
 		i = 0;
 		while (map->map[d][i])
 		{
-			checkifvisited(map);
-			map->isgood = 0;
-			map->e = 0;
-			if (map->mapcopy[d][i] == 32)
-			{
-				i++;
-				continue ;
-			}
-			else if (!floodfill(map, i, d))
-			{
-				freemapcopy(map);
+			if (!itstoolongsoimfindingsolution(map, d, i))
 				return (0);
-			}
 			i++;
 		}
 		d++;
 	}
 	freemapcopy(map);
+	return (1);
+}
+
+int itsalsotoolongsoinfindsolution(t_map *map, t_cub *cub, int d, int i)
+{
+	if (map->map[d][i] == 32 || map->map[d][i] == WALL)
+		return (1);
+	else if (map->map[d][i] == VOID)
+	{
+		if (checkvoid(map, cub, d, i) == 0)
+			return (0);
+	}
+	else if (map->map[d][i] >= 65 && map->map[d][i] <= 90)
+	{
+		if (map->checkplayer)
+			return (0);
+		if (checkvoid(map, cub, d, i) == 0)
+			return (0);
+		if (checkplayerdirection(map, cub, d, i) == 0)
+			return (0);
+	}
+	else
+		return (0);	
+	return (1);
+}
+
+int	checkmap(t_map *map, t_cub *cub)
+{
+	int i;
+	int d;
+
+	i = 0;
+	d = 0;
+	resizemap(map, cub);
+	while (map->map[d])
+	{
+		i = 0;
+		while (map->map[d][i])
+		{
+			if (!itsalsotoolongsoinfindsolution(map, cub, d, i))
+				return (0);
+			i++;
+		}
+		d++;
+	}
+	if (!map->checkplayer)
+		return (0);
+	if (!lookforproblem(map, cub))
+		return (0);
 	return (1);
 }
 
@@ -362,18 +335,11 @@ int	copy(t_map *map, t_cub *cub, int i, int d)
 	return (1);
 }
 
-int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
+void	putcolor(t_map *map, int i, int d)
 {
-	int *rgb;
-	int count;
-
-	count = 0;
-	rgb = malloc(sizeof(int) * 3);
-	if (!rgb)
-		return (0);
-	while (map->file[d][i] && count < 3)
+	while (map->file[d][i] && map->countcolor < 3)
 	{
-		rgb[count] = ft_atoi(map->file[d] + i);
+		map->rgb[map->countcolor] = ft_atoi(map->file[d] + i);
 		while (map->file[d][i] == 32 || map->file[d][i] == '\t'
 			|| map->file[d][i] == '\n' || map->file[d][i] == '\v'
 			|| map->file[d][i] == '\f' || map->file[d][i] == '\r')
@@ -386,72 +352,86 @@ int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
 			i++;
 		else
 			break ;
-		count++;
+		map->countcolor++;
 	}
-	if (count != 2)
+}
+
+int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
+{
+	map->countcolor = 0;
+	map->rgb = malloc(sizeof(int) * 3);
+	if (!map->rgb)
+		return (0);
+	putcolor(map,i, d);
+	printf("%d", map->rgb[map->countcolor]);
+	if (map->countcolor != 2)
 	{
-		free(rgb);
+		free(map->rgb);
 		return (0);
 	}
-	if (rgb[0] > 255 || rgb[1] > 255 || rgb[2] > 255 || rgb[0] < 0 || rgb[1] < 0
-		|| rgb[2] < 0)
+	if (map->rgb[0] > 255 || map->rgb[1] > 255 || map->rgb[2] > 255 || map->rgb[0] < 0 || map->rgb[1] < 0
+		|| map->rgb[2] < 0)
 	{
-		free(rgb);
+		free(map->rgb);
 		return (0);
 	}
-	map->color = (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
-	free(rgb);
+	map->color = (map->rgb[0] << 16) | (map->rgb[1] << 8) | map->rgb[2];
+	free(map->rgb);
 	return (1);
 }
 
-int	getinfo(t_map *map, t_cub *cub, int i, int d)
+int north(t_map *map, t_cub *cub, int i, int d)
 {
-	if (map->file[d][i] == 'N' && map->file[d][i + 1] == 'O')
-	{
-		i += 2;
-		if (map->texturenorth)
-			return (0);
-		if (!copy(map, cub, i, d))
-			return (0);
-		map->texturenorth = ft_strdups(map->ptrtexture);
-		printf("%s\n", map->texturenorth);
-		free(map->ptrtexture);
-		return (1);
-	}
-	else if (map->file[d][i] == 'S' && map->file[d][i + 1] == 'O')
-	{
-		i += 2;
-		if (map->texturesouth)
-			return (0);
-		if (!copy(map, cub, i, d))
-			return (0);
-		map->texturesouth = ft_strdups(map->ptrtexture);
-		free(map->ptrtexture);
-		return (1);
-	}
-	else if (map->file[d][i] == 'W' && map->file[d][i + 1] == 'E')
-	{
-		i += 2;
-		if (map->texturewest)
-			return (0);
-		if (!copy(map, cub, i, d))
-			return (0);
-		map->texturewest = ft_strdups(map->ptrtexture);
-		free(map->ptrtexture);
-		return (1);
-	}
-	else if (map->file[d][i] == 'E' && map->file[d][i + 1] == 'A')
-	{
-		i += 2;
-		if (map->textureeast)
-			return (0);
-		if (!copy(map, cub, i, d))
-			return (0);
-		map->textureeast = ft_strdups(map->ptrtexture);
-		free(map->ptrtexture);
-		return (1);
-	}
-	else if (map->file[d][i] == 'F')
+	i += 2;
+	if (map->texturenorth)
+		return (0);
+	if (!copy(map, cub, i, d))
+		return (0);
+	map->texturenorth = ft_strdups(map->ptrtexture);
+	printf("%s\n", map->texturenorth);
+	free(map->ptrtexture);
+	return (1);
+}
+
+int south(t_map *map, t_cub *cub, int i, int d)
+{
+	i += 2;
+	if (map->texturesouth)
+		return (0);
+	if (!copy(map, cub, i, d))
+		return (0);
+	map->texturesouth = ft_strdups(map->ptrtexture);
+	free(map->ptrtexture);
+	return (1);
+}
+
+int west(t_map *map, t_cub *cub, int i, int d)
+{
+	i += 2;
+	if (map->texturewest)
+		return (0);
+	if (!copy(map, cub, i, d))
+		return (0);
+	map->texturewest = ft_strdups(map->ptrtexture);
+	free(map->ptrtexture);
+	return (1);
+}
+
+int east(t_map *map, t_cub *cub, int i, int d)
+{
+	i += 2;
+	if (map->textureeast)
+		return (0);
+	if (!copy(map, cub, i, d))
+		return (0);
+	map->textureeast = ft_strdups(map->ptrtexture);
+	free(map->ptrtexture);
+	return (1);
+}
+
+int color(t_map *map, t_cub *cub, int i, int d)
+{
+	if (map->file[d][i] == 'F')
 	{
 		i += 1;
 		if (cub->color_floor)
@@ -460,6 +440,7 @@ int	getinfo(t_map *map, t_cub *cub, int i, int d)
 			return (0);
 		cub->color_floor = map->color;
 		printf("%d\n", cub->color_floor);
+		return (1);
 	}
 	else if (map->file[d][i] == 'C')
 	{
@@ -469,12 +450,40 @@ int	getinfo(t_map *map, t_cub *cub, int i, int d)
 		if (!stockagecolor(map, cub, i, d))
 			return (0);
 		cub->color_ceiling = map->color;
+		return (1);
 	}
-	else
+	else 
 		return (0);
-	return (1);
+	return (0);
 }
 
+int	getinfo(t_map *map, t_cub *cub, int i, int d)
+{
+	if (map->file[d][i] == 'N' && map->file[d][i + 1] == 'O')
+	{
+		if (!north(map, cub, i, d))
+			return (0);
+	}
+	else if (map->file[d][i] == 'S' && map->file[d][i + 1] == 'O')
+	{
+		if (!south(map, cub, i, d))
+			return (0);
+	}
+	else if (map->file[d][i] == 'W' && map->file[d][i + 1] == 'E')
+	{
+		if (!west(map, cub, i, d))
+			return (0);
+	}
+	else if (map->file[d][i] == 'E' && map->file[d][i + 1] == 'A')
+	{
+		if (!east(map, cub, i, d))
+			return (0);
+	}
+	else 
+		if (!color(map, cub, i, d))
+			return (0);
+	return (1);
+}
 int	checkallfileinfo(t_cub *cub, t_map *map)
 {
 	if (map->texturenorth && map->texturesouth && map->textureeast
@@ -519,6 +528,7 @@ int	checkfile(t_map *map, t_cub *cub)
 
 int	ismapvalid(t_map *map, t_cub *cub)
 {
+	map->checkplayer = 0;
 	if (map->count > 200)
 	{
 		printf("Error\n");

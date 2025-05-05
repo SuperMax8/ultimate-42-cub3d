@@ -68,7 +68,10 @@ typedef struct s_map
 	char	*textureeast;
 	char	*texturewest;
 	char	*ptrtexture;
+	int		*rgb;
+	int		checkplayer;
 	int		color;
+	int		countcolor;
 	int		x;
 	int		y;
 	int		fd;
