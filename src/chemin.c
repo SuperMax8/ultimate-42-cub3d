@@ -2,14 +2,11 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   chemin.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+
-	+:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+
-	+#+        */
-/*                                                +#+#+#+#+#+
-	+#+           */
-/*   Created: 2025/02/07 15:24:59 by dtheron           #+#    #+#             */
-/*   Updated: 2025/02/07 15:24:59 by dtheron          ###   ########.fr       */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/06 15:47:40 by dtheron           #+#    #+#             */
+/*   Updated: 2025/05/06 15:47:40 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,15 +85,15 @@ int	ismapvalid(t_map *map, t_cub *cub)
 	i = 0;
 	d = 0;
 	map->checkplayer = 0;
-	if (map->count > 200)
-	{
-		printf("Error\n");
-		printf("Map is too big !\n");
-		return (0);
-	}
 	if (!checkfile(map, cub, i, d))
 	{
 		printf("Error\n");
+		return (0);
+	}
+	if (triplelen(map->map) > 200 || ft_doublestrlen(map->map) > 200)
+	{
+		printf("Error\n");
+		printf("Map is too big !\n");
 		return (0);
 	}
 	if (!checkmap(map, cub))
