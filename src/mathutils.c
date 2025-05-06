@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mathutils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:38:39 by max               #+#    #+#             */
-/*   Updated: 2025/04/13 14:42:37 by max              ###   ########.fr       */
+/*   Updated: 2025/05/06 15:12:22 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ float	todegrees(float rad)
 	return (rad * (180.0 / M_PI));
 }
 
-float clamp(float x, float min, float max)
+float	clamp(float x, float min, float max)
 {
-    if (x < min)
-        return (min);
-    if (x > max)
-        return (max);
-    return (x);
+	if (x < min)
+		return (min);
+	if (x > max)
+		return (max);
+	return (x);
 }

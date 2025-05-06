@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vecutils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:14 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/04/13 14:36:45 by max              ###   ########.fr       */
+/*   Updated: 2025/05/06 15:31:28 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ t_vec2f	yawtovec(float yaw)
 	return (v);
 }
 
-float vectoyaw(t_vec2f vec)
+float	vectoyaw(t_vec2f vec)
 {
-	return normyaw(todegrees(atan2(vec.y, vec.x)) + 90.0f);
+	return (normyaw(todegrees(atan2(vec.y, vec.x)) + 90.0f));
 }
 
 float	distance(t_vec2f first, t_vec2f second)
