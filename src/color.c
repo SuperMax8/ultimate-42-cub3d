@@ -6,13 +6,13 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:42 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:31:56 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:10:05 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 
-int	putcolor(t_map *map, int i, int d)
+int	putcolor(t_map *map)
 {
 	if (map->countcolor != 2)
 	{
@@ -46,6 +46,7 @@ int	checkcolor(t_map *map, int i, int d)
 
 int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
 {
+	(void)cub;
 	map->rgb = malloc(sizeof(int) * 3);
 	if (!map->rgb)
 		return (0);
@@ -63,7 +64,7 @@ int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
 			break ;
 		map->countcolor++;
 	}
-	if (!putcolor(map, i, d))
+	if (!putcolor(map))
 		return (0);
 	return (1);
 }

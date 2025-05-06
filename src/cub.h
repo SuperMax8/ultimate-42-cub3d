@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:38:57 by max               #+#    #+#             */
-/*   Updated: 2025/05/06 15:51:55 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:04:57 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int			mapcopy(t_map *map);
 int			checkmap(t_map *map, t_cub *cub);
 void		freemapcopy(t_map *map);
 int			color(t_map *map, t_cub *cub, int i, int d);
-int			copy(t_map *map, t_cub *cub, int i, int d);
+int	copy(t_map *map, int i, int d);
 int			triplelen(char **str);
 
 

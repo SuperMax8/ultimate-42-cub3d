@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:30 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:44:52 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:07:49 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 int	north(t_map *map, t_cub *cub, int i, int d)
 {
+	(void)cub;
 	i += 2;
 	if (map->texturenorth)
 		return (0);
-	if (!copy(map, cub, i, d))
+	if (!copy(map, i, d))
 		return (0);
 	map->texturenorth = ft_strdups(map->ptrtexture);
 	free(map->ptrtexture);
@@ -26,10 +27,11 @@ int	north(t_map *map, t_cub *cub, int i, int d)
 
 int	south(t_map *map, t_cub *cub, int i, int d)
 {
+	(void)cub;
 	i += 2;
 	if (map->texturesouth)
 		return (0);
-	if (!copy(map, cub, i, d))
+	if (!copy(map, i, d))
 		return (0);
 	map->texturesouth = ft_strdups(map->ptrtexture);
 	free(map->ptrtexture);
@@ -38,10 +40,11 @@ int	south(t_map *map, t_cub *cub, int i, int d)
 
 int	west(t_map *map, t_cub *cub, int i, int d)
 {
+	(void)cub;
 	i += 2;
 	if (map->texturewest)
 		return (0);
-	if (!copy(map, cub, i, d))
+	if (!copy(map, i, d))
 		return (0);
 	map->texturewest = ft_strdups(map->ptrtexture);
 	free(map->ptrtexture);
@@ -50,10 +53,11 @@ int	west(t_map *map, t_cub *cub, int i, int d)
 
 int	east(t_map *map, t_cub *cub, int i, int d)
 {
+	(void)cub;
 	i += 2;
 	if (map->textureeast)
 		return (0);
-	if (!copy(map, cub, i, d))
+	if (!copy(map, i, d))
 		return (0);
 	map->textureeast = ft_strdups(map->ptrtexture);
 	free(map->ptrtexture);

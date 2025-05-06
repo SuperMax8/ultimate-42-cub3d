@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:40 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:31:44 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:08:32 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	checkvoid(t_map *map, t_cub *cub, int d, int i)
 {
+	(void)cub;
 	if (i == 0 || i == ft_strlen(map->map[d]) - 1)
 		return (0);
 	if (d == 0 || d == ft_doublestrlen(map->map) - 1)
@@ -29,6 +30,7 @@ int	checkvoid(t_map *map, t_cub *cub, int d, int i)
 
 int	checkplayerdirection(t_map *map, t_cub *cub, int d, int i)
 {
+	(void)cub;
 	if (map->map[d][i] == NORTH)
 		cub->pyaw = 0;
 	else if (map->map[d][i] == SOUTH)

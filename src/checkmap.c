@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:36 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:32:24 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:08:13 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int	lookforproblem(t_map *map, t_cub *cub)
 
 	i = 0;
 	d = 0;
+	(void)cub;
 	if (!mapcopy(map))
 		return (0);
 	while (map->mapcopy[d])

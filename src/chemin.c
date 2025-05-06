@@ -12,7 +12,7 @@
 
 #include "cub.h"
 
-int	copy(t_map *map, t_cub *cub, int i, int d)
+int	copy(t_map *map, int i, int d)
 {
 	int	e;
 

@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:30:10 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:43:01 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:03:56 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	count_line(t_map *map)
 {
 	char	*line;
 	int		count;
-	char	d;
 
 	count = 0;
 	line = get_next_line(map->fd);

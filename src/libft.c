@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:45 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:44:15 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 16:10:25 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	resizemap(t_map *map, t_cub *cub)
 
 	d = 0;
 	i = 0;
+	(void)cub;
 	while (map->map[d])
 	{
 		i = 0;
