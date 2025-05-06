@@ -3,8 +3,8 @@ SO ./textures/crimson_nylium.xpm
 WE ./textures/tnt_side.xpm
 EA ./textures/resin_bricks.xpm 
 
-F 0,  0   , 1
-C 22  ,  23 , 2  
+F 199,  199  , 1
+C 22  ,  235 , 244
 
 1111111111111111111111111       
 1000000000110000000000001       

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:38:57 by max               #+#    #+#             */
-/*   Updated: 2025/05/04 16:24:01 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/06 15:35:28 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ typedef struct cub
 	t_img	*img_s;
 	t_img	*img_e;
 	t_img	*img_w;
-	t_map *mapmap;
+	t_map	*mapmap;
 }			t_cub;
 
 int			ismapvalid(t_map *map, t_cub *cub);
@@ -132,7 +132,22 @@ t_img		*newimg(t_cub *cub, int width, int height);
 void		destroyimg(t_cub *cub, t_img *img);
 int			getpixel(t_img *img, int x, int y);
 void		drawpixel(t_img *img, int x, int y, int color);
-char	*ft_strdup(const char *src);
-void freemap(t_map *map);
+char		*ft_strdup(const char *src);
+void		freemap(t_map *map);
+int			getinfo(t_map *map, t_cub *cub, int i, int d);
+int			checkplayerdirection(t_map *map, t_cub *cub, int d, int i);
+int			checkvoid(t_map *map, t_cub *cub, int d, int i);
+int			ft_doublestrlen(char **str);
+int			ft_strlen(char *str);
+char		*ft_strdups(char *str);
+void		resizemap(t_map *map, t_cub *cub);
+int			ft_atoi(const char *str);
+int			floodfill(t_map *map, int i, int d);
+void		checkifvisited(t_map *map);
+int			mapcopy(t_map *map);
+int			checkmap(t_map *map, t_cub *cub);
+void		freemapcopy(t_map *map);
+int			color(t_map *map, t_cub *cub, int i, int d);
+int			copy(t_map *map, t_cub *cub, int i, int d);
 
 #endif

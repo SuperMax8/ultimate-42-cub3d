@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:28:01 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/04 16:22:23 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/06 15:41:41 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,22 @@ void	free_file(t_map *map)
 
 int	checkcub(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
 		i++;
 	i--;
-	if (str[i] != 'b' || str[i - 1] != 'u' || str[i - 2] != 'c' || str[i - 3] != '.')
+	if (str[i] != 'b' || str[i - 1] != 'u' || str[i - 2] != 'c' || str[i
+			- 3] != '.')
 		return (1);
-	return(0);
+	return (0);
 }
 
-int triplelen(char **str)
+int	triplelen(char **str)
 {
-	int biggest;
-	int i;
+	int	biggest;
+	int	i;
 
 	biggest = 0;
 	i = 0;
@@ -58,13 +59,8 @@ int triplelen(char **str)
 	return (biggest);
 }
 
-int	main(int count, char **args)
+int	errorcheck(int count, char **args, t_map *map)
 {
-	static t_map		map;
-	static t_cub		cub;
-
-	cub.win_res.x = 16 * 100;
-	cub.win_res.y = 9 * 100;
 	if (count != 2)
 	{
 		printf("not the right number of args\n");
@@ -75,18 +71,29 @@ int	main(int count, char **args)
 		printf("its not a *.cub file\n");
 		return (0);
 	}
-	map.fd = open(args[1], O_RDONLY);
-	if (map.fd < 0)
+	map->fd = open(args[1], O_RDONLY);
+	if (map->fd < 0)
 	{
 		printf("file doesnt exist\n");
 		return (0);
 	}
-	map.count = count_line(&map);
-	close(map.fd);
+	map->count = count_line(map);
+	close(map->fd);
+	return (1);
+}
+
+int	main(int count, char **args)
+{
+	static t_map	map;
+	static t_cub	cub;
+
+	cub.win_res.x = 16 * 100;
+	cub.win_res.y = 9 * 100;
+	if (!errorcheck(count, args, &map))
+		return (0);
 	map.fd = open(args[1], O_RDONLY);
 	parsing(&map);
 	close(map.fd);
-
 	if (!ismapvalid(&map, &cub))
 	{
 		free_file(&map);
@@ -98,17 +105,6 @@ int	main(int count, char **args)
 	cub.map = map.map;
 	cub.mwidth = triplelen(map.map);
 	cub.mheight = map.sizemap;
-
-	printf("\n %d   %d\n", cub.mwidth, cub.mheight);
-	int y = 0;
-	while (map.map[y])
-	{
-		printf("%sd\n", map.map[y]);
-		y++;
-	}
-	
-
 	initgraph(&cub);
 	return (1);
 }
-

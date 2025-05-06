@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:30:10 by dtheron           #+#    #+#             */
-/*   Updated: 2025/04/12 03:57:44 by max              ###   ########.fr       */
+/*   Updated: 2025/05/06 15:43:01 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
 #include "cub.h"
+#include "get_next_line.h"
 
 char	*ft_strcpy(char *dest, const char *src)
 {
@@ -48,7 +48,7 @@ int	count_line(t_map *map)
 {
 	char	*line;
 	int		count;
-	char d;
+	char	d;
 
 	count = 0;
 	line = get_next_line(map->fd);
@@ -64,7 +64,7 @@ int	count_line(t_map *map)
 
 void	parsing(t_map *map)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	map->file = malloc(sizeof(char *) * (map->count + 1));
