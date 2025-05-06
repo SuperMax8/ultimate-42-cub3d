@@ -24,8 +24,7 @@ int	ft_atoi(const char *str)
 	i = 0;
 	result = 0;
 	count_negative = 0;
-	while (str[i] == 32 || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
-		|| str[i] == '\f' || str[i] == '\r')
+	while (str[i] == 32)
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
@@ -335,35 +334,8 @@ int	copy(t_map *map, t_cub *cub, int i, int d)
 	return (1);
 }
 
-void	putcolor(t_map *map, int i, int d)
+int	putcolor(t_map *map, int i, int d)
 {
-	while (map->file[d][i] && map->countcolor < 3)
-	{
-		map->rgb[map->countcolor] = ft_atoi(map->file[d] + i);
-		while (map->file[d][i] == 32 || map->file[d][i] == '\t'
-			|| map->file[d][i] == '\n' || map->file[d][i] == '\v'
-			|| map->file[d][i] == '\f' || map->file[d][i] == '\r')
-			i++;
-		if (map->file[d][i] == '-' || map->file[d][i] == '+')
-			i++;
-		while (map->file[d][i] >= '0' && map->file[d][i] <= '9')
-			i++;
-		if (map->file[d][i] == ',')
-			i++;
-		else
-			break ;
-		map->countcolor++;
-	}
-}
-
-int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
-{
-	map->countcolor = 0;
-	map->rgb = malloc(sizeof(int) * 3);
-	if (!map->rgb)
-		return (0);
-	putcolor(map,i, d);
-	printf("%d", map->rgb[map->countcolor]);
 	if (map->countcolor != 2)
 	{
 		free(map->rgb);
@@ -377,6 +349,44 @@ int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
 	}
 	map->color = (map->rgb[0] << 16) | (map->rgb[1] << 8) | map->rgb[2];
 	free(map->rgb);
+	return (1);
+}
+
+int checkcolor(t_map *map, int i, int d)
+{
+	map->rgb[map->countcolor] = ft_atoi(map->file[d] + i);
+	while (map->file[d][i] == 32)
+		i++;
+	if (map->file[d][i] == '-' || map->file[d][i] == '+')
+		i++;
+	while (map->file[d][i] >= '0' && map->file[d][i] <= '9')
+		i++;
+	while (map->file[d][i] == 32)
+		i++;
+	return (i);
+}
+
+int	stockagecolor(t_map *map, t_cub *cub, int i, int d)
+{
+	map->rgb = malloc(sizeof(int) * 3);
+	if (!map->rgb)
+		return (0);
+	while (map->file[d][i] && map->countcolor < 3)
+	{
+		i = checkcolor(map, i, d);
+		if (map->file[d][i] == ',')
+			i++;
+		else if (map->countcolor == 2 && map->file[d][i])
+		{
+			free(map->rgb);
+			return (0);
+		}
+		else 
+			break;
+		map->countcolor++;
+	}
+	if (!putcolor(map, i, d))
+		return (0);
 	return (1);
 }
 
@@ -431,6 +441,7 @@ int east(t_map *map, t_cub *cub, int i, int d)
 
 int color(t_map *map, t_cub *cub, int i, int d)
 {
+	map->countcolor = 0;
 	if (map->file[d][i] == 'F')
 	{
 		i += 1;
@@ -439,7 +450,6 @@ int color(t_map *map, t_cub *cub, int i, int d)
 		if (!stockagecolor(map, cub, i, d))
 			return (0);
 		cub->color_floor = map->color;
-		printf("%d\n", cub->color_floor);
 		return (1);
 	}
 	else if (map->file[d][i] == 'C')
