@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:45 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:33:14 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 15:44:15 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ char	*ft_strdups(char *str)
 		i++;
 	}
 	newstr[i] = '\0';
-	printf("size %d\n", ft_strlen(newstr));
 	return (newstr);
 }
 

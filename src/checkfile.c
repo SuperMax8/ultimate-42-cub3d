@@ -6,7 +6,7 @@
 /*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:30 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:31:06 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/06 15:44:52 by dtheron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	north(t_map *map, t_cub *cub, int i, int d)
 	if (!copy(map, cub, i, d))
 		return (0);
 	map->texturenorth = ft_strdups(map->ptrtexture);
-	printf("%s\n", map->texturenorth);
 	free(map->ptrtexture);
 	return (1);
 }

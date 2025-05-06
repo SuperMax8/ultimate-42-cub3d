@@ -59,7 +59,6 @@ int	checkfile(t_map *map, t_cub *cub, int i, int d)
 		i = 0;
 		while (map->file[d][i])
 		{
-			printf("%s\n", map->file[d]);
 			if (map->file[d][i] >= 65 && map->file[d][i] <= 90)
 			{
 				if (getinfo(map, cub, i, d))
@@ -97,12 +96,12 @@ int	ismapvalid(t_map *map, t_cub *cub)
 	}
 	if (!checkfile(map, cub, i, d))
 	{
-		printf("Errori\n");
+		printf("Error\n");
 		return (0);
 	}
 	if (!checkmap(map, cub))
 	{
-		printf("Errore\n");
+		printf("Error\n");
 		return (0);
 	}
 	return (1);
