@@ -6,7 +6,7 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:27 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/05/06 16:45:25 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:47:53 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	printmap(t_cub *cub)
 		{
 			coord.x = x * 20;
 			coord.y = y * 20;
+			if (cub->map[y][x] == '\0')
+				break ;
 			if (cub->map[y][x] == WALL)
 				drawsqare(cub, coord, 20, 0x00FF0000);
 			else if (cub->map[y][x] == VOID)
