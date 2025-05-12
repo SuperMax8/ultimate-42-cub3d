@@ -6,7 +6,7 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:05:00 by max               #+#    #+#             */
-/*   Updated: 2025/05/06 15:30:56 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:29:31 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,6 @@ void	listeninputs(t_cub *cub)
 {
 	mlx_hook(cub->window, KeyPress, KeyPressMask, &handle_keypress, cub);
 	mlx_hook(cub->window, KeyRelease, KeyReleaseMask, &handle_keyrelease, cub);
+	mlx_hook(cub->window, DestroyNotify, StructureNotifyMask, &closewindow,
+		cub);
 }

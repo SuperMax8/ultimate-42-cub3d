@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:30:10 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 16:03:56 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/12 16:30:12 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ int	count_line(t_map *map)
 		free(line);
 		line = get_next_line(map->fd);
 	}
-	printf("%d", count);
 	return (count);
 }
 

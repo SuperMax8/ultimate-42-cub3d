@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checkfloodfill.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:29:33 by dtheron           #+#    #+#             */
-/*   Updated: 2025/05/06 15:31:32 by dtheron          ###   ########.fr       */
+/*   Updated: 2025/05/12 16:30:21 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	mapcopy(t_map *map)
 	d = 0;
 	i = 0;
 	map->sizemap = ft_doublestrlen(map->map);
-	map->mapcopy = malloc(sizeof(char *) * map->sizemap + 1);
+	map->mapcopy = malloc(sizeof(char *) * map->sizemap + 8);
 	if (!map->mapcopy)
 		return (0);
 	while (map->map[d])

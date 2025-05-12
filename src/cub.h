@@ -6,7 +6,7 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 16:50:46 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/05/06 16:56:56 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:26:24 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int				ft_strlen(char *str);
 int				count_line(t_map *map);
 
 void			initgraph(t_cub *cub);
-void			closewindow(t_cub *cub);
+int				closewindow(void *strc);
 void			renderframe(t_cub *cub);
 t_rayresult		*raycastwall(t_cub *cub, t_vec2f raydir);
 void			renderwall(t_cub *cub, int screencol, t_rayresult *ray);

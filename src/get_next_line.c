@@ -3,133 +3,127 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/17 17:01:11 by dtheron           #+#    #+#             */
-/*   Updated: 2025/01/17 17:24:01 by dtheron          ###   ########.fr       */
+/*   Created: 2024/11/10 16:53:03 by mrotceig          #+#    #+#             */
+/*   Updated: 2024/11/26 20:45:08 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static void	free_gnl(t_gnl *gnl)
+t_GNLFile	*getgnl(int fd)
 {
-	if (gnl->buffer)
+	static t_GNLFile	file = {-1, {}, 0, 0, NULL, 0, 0};
+
+	if (file.fd != fd)
 	{
-		free(gnl->buffer);
-		gnl->buffer = NULL;
+		file.fd = fd;
+		file.buffer_pos = 0;
+		file.buffer_size = 0;
 	}
-	gnl->fd = -1;
-	gnl->index = 0;
-	gnl->size = 0;
-}
-
-static void	free_lereste(t_gnl *gnl, char *temp)
-{
-	free(temp);
-	free_gnl(gnl);
-}
-
-static char	*read_to_buffer(t_gnl *gnl, char *temp, int bytes_read)
-{
-	while (gnl_strchr(gnl->buffer, '\n', gnl->index) == -1)
-	{
-		bytes_read = read(gnl->fd, temp, BUFFER_SIZE);
-		if (bytes_read < 0)
-		{
-			free_lereste(gnl, temp);
-			return (NULL);
-		}
-		if (bytes_read == 0)
-		{
-			free(temp);
-			return (gnl->buffer);
-		}
-		temp[bytes_read] = '\0';
-		gnl->buffer = gnl_strjoin(gnl->buffer, temp);
-		if (!gnl->buffer)
-		{
-			free_lereste(gnl, temp);
-			return (NULL);
-		}
-		gnl->size = gnl_strlen(gnl->buffer);
-	}
-	free(temp);
-	return (gnl->buffer);
-}
-
-static char	*extract_line(t_gnl *gnl, char *temp, int bytes_read)
-{
-	char	*line;
-	int		newline_pos;
-
-	gnl->buffer = read_to_buffer(gnl, temp, bytes_read);
-	if (!gnl->buffer || gnl->size == 0 || gnl->index >= gnl->size)
-	{
-		free_gnl(gnl);
+	file.lsize = 0;
+	file.lcapacity = BUFFER_SIZE + 1;
+	file.line = malloc(sizeof(char) * (file.lcapacity));
+	if (!file.line)
 		return (NULL);
-	}
-	newline_pos = gnl_strchr(gnl->buffer, '\n', gnl->index);
-	if (newline_pos == -1)
+	return (&file);
+}
+
+int	refill_buffer(int fd, t_GNLFile *file)
+{
+	file->buffer_size = read(fd, file->buffer, BUFFER_SIZE);
+	if (file->buffer_size == -1)
 	{
-		line = gnl_strsub(gnl->buffer, gnl->index, gnl->size);
-		gnl->index = gnl->size;
+		file->buffer_size = 0;
+		file->buffer_pos = 0;
+		file->lsize = 0;
+		return (-1);
 	}
-	else
+	file->buffer_pos = 0;
+	return (file->buffer_size);
+}
+
+int	process_line(t_GNLFile *file)
+{
+	int	ni;
+
+	ni = indexof('\n', file->buffer, file->buffer_pos, file->buffer_size);
+	if (ni != -1)
 	{
-		line = gnl_strsub(gnl->buffer, gnl->index, newline_pos + 1);
-		gnl->index = newline_pos + 1;
+		if (!appendline(file, file->buffer, file->buffer_pos, ni + 1))
+			return (-1);
+		file->buffer_pos = ni + 1;
+		file->line[file->lsize] = '\0';
+		return (1);
 	}
-	if (gnl->index >= gnl->size)
-		free_gnl(gnl);
-	return (line);
+	if (!appendline(file, file->buffer, file->buffer_pos, file->buffer_size))
+		return (-1);
+	file->buffer_pos = 0;
+	return (0);
+}
+
+char	*checkend(t_GNLFile *file)
+{
+	if (file->lsize > 0)
+	{
+		file->line[file->lsize] = '\0';
+		return (file->line);
+	}
+	if (file->line)
+	{
+		free(file->line);
+		file->line = NULL;
+	}
+	return (NULL);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_gnl	gnl = {NULL, 0, 0, -1};
-	char			*temp;
-	ssize_t			bytes_read;
+	t_GNLFile	*file;
+	int			result;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	file = getgnl(fd);
+	if (!file)
 		return (NULL);
-	bytes_read = 0;
-	temp = malloc(BUFFER_SIZE + 1);
-	if (!temp)
+	while (1)
 	{
-		free_gnl(&gnl);
-		return (NULL);
+		if (file->buffer_size > 0 && file->buffer_pos < file->buffer_size)
+		{
+			result = process_line(file);
+			if (result == -1)
+				return (NULL);
+			if (result == 1)
+				return (file->line);
+		}
+		if (refill_buffer(fd, file) <= 0)
+			break ;
 	}
-	if (gnl.fd != fd)
-	{
-		free_gnl(&gnl);
-		gnl.fd = fd;
-	}
-	return (extract_line(&gnl, temp, bytes_read));
+	return (checkend(file));
 }
 
-/*int	main(int argc, char **argv)
-{
-	int	fd;
-	char	*line;
-	int	i;
+// int	main(int count, char **args)
+// {
+// 	int fd;
+// 	char *line;
+// 	char *RED;
+// 	char *RESET;
+// 	int i;
 
-	i = 0;
-	if (argc != 2)
-	{
-		return (1);
-	}
-	fd = open(argv[1], O_RDONLY);
-	if (fd < 0)
-	{
-		return (1);
-	}
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		printf("%s", line);
-		free(line);
-		i++;
-	}
-	close(fd);
-	return (0);
-}*/
+// 	RED = "\033[1;31m";
+// 	RESET = "\033[0m";
+// 	for (int a = 1; a < count; ++a)
+// 	{
+// 		printf("%sStartFile : %s\n", RESET, args[a]);
+// 		fd = open(args[a], O_RDONLY);
+// 		i = 0;
+// 		while ((line = get_next_line(fd)) != NULL)
+// 		{
+// 			printf("%s%s", RED, line);
+// 			free(line);
+// 			i++;
+// 		}
+// 		printf("%sENDFILE\n", RESET);
+// 		close(fd);
+// 	}
+// }

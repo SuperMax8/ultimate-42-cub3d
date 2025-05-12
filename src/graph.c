@@ -6,7 +6,7 @@
 /*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:47:21 by mrotceig          #+#    #+#             */
-/*   Updated: 2025/05/06 15:13:19 by mrotceig         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:28:02 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@ void	freemap(t_map *map)
 	free(map->texturesouth);
 }
 
-void	closewindow(t_cub *cub)
+int	closewindow(void *strc)
 {
+	t_cub	*cub;
+
+	cub = (t_cub *)strc;
 	destroyimg(cub, cub->framebuff);
 	destroyimg(cub, cub->img_n);
 	destroyimg(cub, cub->img_s);

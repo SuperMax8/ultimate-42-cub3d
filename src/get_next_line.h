@@ -3,39 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtheron <dtheron@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mrotceig <mrotceig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/17 17:01:07 by dtheron           #+#    #+#             */
-/*   Updated: 2025/01/17 17:20:48 by dtheron          ###   ########.fr       */
+/*   Created: 2024/11/08 16:19:23 by mrotceig          #+#    #+#             */
+/*   Updated: 2025/02/07 17:40:20 by mrotceig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 16
+# endif
+
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
 # include <unistd.h>
 
-typedef struct s_gnl
+typedef struct gnlfile
 {
-	char	*buffer;
-	size_t	size;
-	size_t	index;
 	int		fd;
-}			t_gnl;
+	char	buffer[BUFFER_SIZE];
+	int		buffer_pos;
+	int		buffer_size;
+	char	*line;
+	int		lcapacity;
+	int		lsize;
+}			t_GNLFile;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
-# endif
+typedef struct strappendparams
+{
+	char	*source;
+	char	*dest;
+	int		source_start;
+	int		source_end;
+	int		dest_at;
+}			t_StrAppendParams;
 
-void		*gnl_memcpy(void *dest, const void *src, size_t n);
-size_t		gnl_strlen(const char *str);
-int			gnl_strchr(const char *s, int c, int d);
-char		*gnl_strjoin(char *s1, char *s2);
-char		*gnl_strsub(const char *s, int start, int end);
+int			appendline(t_GNLFile *file, char *source, int from, int to);
+
+int			indexof(char c, char *s, int from, int to);
+
 char		*get_next_line(int fd);
 
-#endif
+#endif // GET_NEXT_LINE_H
